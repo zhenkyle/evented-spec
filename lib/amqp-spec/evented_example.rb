@@ -8,7 +8,7 @@ module AMQP
     class EventedExample
 
       # Create new evented example
-      def initialize opts = {}, example_group_instance, &block
+      def initialize(opts, example_group_instance, &block)
         @opts, @example_group_instance, @block = opts, example_group_instance, block
       end
 
@@ -30,7 +30,7 @@ module AMQP
       #
       # Please redefine it inside descendant class and call super.
       #
-      def done delay=nil, &block
+      def done(delay=nil, &block)
         if delay
           EM.add_timer delay, &block
         else
@@ -40,7 +40,7 @@ module AMQP
 
       # Runs hooks of specified type (hopefully, inside the event loop)
       #
-      def run_em_hooks type
+      def run_em_hooks(type)
         @example_group_instance.class.em_hooks[type].each do |hook|
           if @example_group_instance.respond_to? :instance_eval_without_event_loop
             @example_group_instance.instance_eval_without_event_loop(&hook)
@@ -105,7 +105,7 @@ module AMQP
       # Breaks the EM event loop and finishes the spec.
       # Done yields to any given block first, then stops EM event loop.
       #
-      def done(delay=nil)
+      def done(delay = nil)
         super(delay) do
           yield if block_given?
           EM.next_tick do
@@ -122,7 +122,7 @@ module AMQP
       # Run @block inside the AMQP.start loop
       def run
         run_em_loop do
-          AMQP.start_connection @opts, do
+          AMQP.start_connection(@opts) do
             run_em_hooks :amqp_before
             @block.call
           end
@@ -132,7 +132,7 @@ module AMQP
       # Breaks the event loop and finishes the spec. It yields to any given block first,
       # then stops AMQP, EM event loop and cleans up AMQP state.
       #
-      def done(delay=nil)
+      def done(delay = nil)
         super(delay) do
           yield if block_given?
           EM.next_tick do

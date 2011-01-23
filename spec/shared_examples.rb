@@ -16,7 +16,7 @@ shared_examples_for 'SpecHelper examples' do
     start = Time.now
     amqp do
       EM.add_timer(0.5) {
-        (Time.now-start).should be_close(0.5, 0.1)
+        (Time.now-start).should be_within(0.1).of(0.5)
         done
       }
     end
@@ -85,7 +85,7 @@ shared_examples_for 'done examples' do
       done(0.2) { @block_called = true; EM.reactor_running?.should == true }
     end
     @block_called.should == true
-    (Time.now-start).should be_close(0.2, 0.1)
+    (Time.now-start).should be_within(0.1).of(0.2)
   end
 
   it 'should have delayed done (when em is used)' do
@@ -94,7 +94,7 @@ shared_examples_for 'done examples' do
       done(0.2) { @block_called = true; EM.reactor_running?.should == true }
     end
     @block_called.should == true
-    (Time.now-start).should be_close(0.2, 0.1)
+    (Time.now-start).should be_within(0.1).of(0.2)
   end
 end
 
@@ -114,19 +114,19 @@ shared_examples_for 'timeout examples' do
         EM.add_timer(0.5) { done }
       end
     }.to raise_error SpecTimeoutExceededError
-    (Time.now-@start).should be_close(0.2, 0.1)
+    (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "spec timeout given in amqp options has higher priority than default" do
     expect { amqp(:spec_timeout => 0.2) {} }.
         to raise_error SpecTimeoutExceededError
-    (Time.now-@start).should be_close(0.2, 0.1)
+    (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "but timeout call inside amqp loop has even higher priority" do
     expect { amqp(:spec_timeout => 0.5) { timeout(0.2) } }.
         to raise_error SpecTimeoutExceededError
-    (Time.now-@start).should be_close(0.2, 0.1)
+    (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "AMQP connection should not leak between examples" do
@@ -138,7 +138,7 @@ shared_examples_for 'timeout examples' do
 
     specify 'default timeout should be 0.2' do
       expect { em { EM.add_timer(2) { done } } }.to raise_error SpecTimeoutExceededError
-      (Time.now-@start).should be_close(0.2, 0.1)
+      (Time.now-@start).should be_within(0.1).of(0.2)
     end
 
     context 'deeply embedded context can set up separate defaults' do
@@ -146,7 +146,7 @@ shared_examples_for 'timeout examples' do
 
       specify 'default timeout should be 0.5' do
         expect { amqp { EM.add_timer(2) { done } } }.to raise_error SpecTimeoutExceededError
-        (Time.now-@start).should be_close(0.5, 0.1)
+        (Time.now-@start).should be_within(0.1).of(0.5)
       end
     end
   end
@@ -167,7 +167,7 @@ shared_examples_for 'Spec examples' do
     start = Time.now
 
     EM.add_timer(0.2) {
-      (Time.now-start).should be_close(0.2, 0.1)
+      (Time.now-start).should be_within(0.1).of(0.2)
       done
     }
   end
@@ -178,7 +178,7 @@ shared_examples_for 'Spec examples' do
 
     timer = EM.add_periodic_timer(0.2) {
       if (num += 1) == 2
-        (Time.now-start).should be_close(0.5, 0.1)
+        (Time.now-start).should be_within(0.1).of(0.5)
         EM.cancel_timer timer
         done
       end

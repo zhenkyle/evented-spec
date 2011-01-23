@@ -8,7 +8,7 @@ group :test do
   if RUBY_PLATFORM =~ /mswin|windows|mingw/
     # For color support on Windows (deprecated?)
     gem 'win32console'
-    gem 'rspec', '~>1.3.0', require: 'spec'
+    gem 'rspec', '~>1.3.0', :require => 'spec'
   else
     gem 'rspec', '>=2.0.0'
   end

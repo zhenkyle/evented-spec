@@ -53,39 +53,39 @@ module AMQP
       # Sets/retrieves default timeout for running evented specs for this
       # example group and its nested groups.
       #
-      def default_timeout spec_timeout=nil
+      def default_timeout(spec_timeout = nil)
         default_options[:spec_timeout] = spec_timeout || default_options[:spec_timeout]
       end
 
       # Sets/retrieves default AMQP.start options for this example group
       # and its nested groups.
       #
-      def default_options opts=nil
+      def default_options(opts = nil)
         metadata[:em_defaults] ||= {}
         metadata[:em_defaults][self] ||= (superclass.default_options.dup rescue {})
         metadata[:em_defaults][self] = opts || metadata[:em_defaults][self]
       end
 
       # Add before hook that will run inside EM event loop
-      def em_before scope = :each, &block
+      def em_before(scope = :each, &block)
         raise ArgumentError, "em_before only supports :each scope" unless :each == scope
         em_hooks[:em_before] << block
       end
 
       # Add after hook that will run inside EM event loop
-      def em_after scope = :each, &block
+      def em_after(scope = :each, &block)
         raise ArgumentError, "em_after only supports :each scope" unless :each == scope
         em_hooks[:em_after].unshift block
       end
 
       # Add before hook that will run inside AMQP connection (AMQP.start loop)
-      def amqp_before scope = :each, &block
+      def amqp_before(scope = :each, &block)
         raise ArgumentError, "amqp_before only supports :each scope" unless :each == scope
         em_hooks[:amqp_before] << block
       end
 
       # Add after hook that will run inside AMQP connection (AMQP.start loop)
-      def amqp_after scope = :each, &block
+      def amqp_after(scope = :each, &block)
         raise ArgumentError, "amqp_after only supports :each scope" unless :each == scope
         em_hooks[:amqp_after].unshift block
       end
@@ -94,14 +94,16 @@ module AMQP
       def em_hooks
         metadata[:em_hooks] ||= {}
         metadata[:em_hooks][self] ||=
-            {em_before: (superclass.em_hooks[:em_before].clone rescue []),
-             em_after: (superclass.em_hooks[:em_after].clone rescue []),
-             amqp_before: (superclass.em_hooks[:amqp_before].clone rescue []),
-             amqp_after: (superclass.em_hooks[:amqp_after].clone rescue [])}
+            {
+              :em_before   => (superclass.em_hooks[:em_before].clone rescue []),
+              :em_after    => (superclass.em_hooks[:em_after].clone rescue []),
+              :amqp_before => (superclass.em_hooks[:amqp_before].clone rescue []),
+              :amqp_after  => (superclass.em_hooks[:amqp_after].clone rescue [])
+            }
       end
     end
 
-    def self.included example_group
+    def self.included(example_group)
       unless example_group.respond_to? :default_timeout
         example_group.extend GroupMethods
       end
@@ -131,7 +133,7 @@ module AMQP
     # to force spec to timeout if something goes wrong and EM/AMQP loop hangs for some
     # reason. SpecTimeoutExceededError is raised if it happens.
     #
-    def amqp opts={}, &block
+    def amqp(opts = {}, &block)
       opts = default_options.merge opts
       @evented_example = AMQPExample.new(opts, self, &block)
       @evented_example.run
@@ -144,8 +146,8 @@ module AMQP
     # For compatibility with EM-Spec API, em method accepts either options Hash
     # or numeric timeout in seconds.
     #
-    def em opts = {}, &block
-      opts = default_options.merge(opts.is_a?(Hash) ? opts : {spec_timeout: opts})
+    def em(opts = {}, &block)
+      opts = default_options.merge(opts.is_a?(Hash) ? opts : { :spec_timeout =>  opts })
       @evented_example = EMExample.new(opts, self, &block)
       @evented_example.run
     end
@@ -159,13 +161,13 @@ module AMQP
     # that your (default or explicit) spec timeout may fire before your delayed done
     # callback is due, leading to SpecTimeoutExceededError
     #
-    def done *args, &block
+    def done(*args, &block)
       @evented_example.done *args, &block
     end
 
     # Manually sets timeout for currently running example
     #
-    def timeout *args
+    def timeout(*args)
       @evented_example.timeout *args
     end
 

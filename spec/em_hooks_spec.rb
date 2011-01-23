@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-def hook symbol=nil, reactor, connection
+def hook(symbol, reactor, connection)
   @hooks_called << symbol.to_sym if symbol
   if :reactor_running == reactor
     EM.reactor_running?.should be_true

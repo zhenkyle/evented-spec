@@ -12,7 +12,7 @@ describe 'Plain EM, no AMQP' do
       start = Time.now
       em do
         EM.add_timer(0.5) {
-          (Time.now-start).should be_close(0.5, 0.1)
+          (Time.now-start).should be_within(0.1).of(0.5)
           done
         }
       end
@@ -25,7 +25,7 @@ describe 'Plain EM, no AMQP' do
           EM.add_timer(1) { done }
         end
       }.to raise_error SpecTimeoutExceededError
-      (Time.now-start).should be_close(0.5, 0.1)
+      (Time.now-start).should be_within(0.1).of(0.5)
     end
 
     it "should be possible to set spec timeout as an option (amqp interface compatibility)" do
@@ -35,7 +35,7 @@ describe 'Plain EM, no AMQP' do
           EM.add_timer(1) { done }
         end
       }.to raise_error SpecTimeoutExceededError
-      (Time.now-start).should be_close(0.5, 0.1)
+      (Time.now-start).should be_within(0.1).of(0.5)
     end
   end
 
