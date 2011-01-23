@@ -210,9 +210,3 @@ module AMQP
     end
   end
 end
-
-# Monkey patching EM to provide drop-in experience for legacy EM-Spec based examples
-module EventMachine
-  Spec = AMQP::EMSpec
-  SpecHelper = AMQP::SpecHelper
-end
