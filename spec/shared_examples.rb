@@ -104,7 +104,7 @@ shared_examples_for 'timeout examples' do
   it 'should timeout before reaching done because of default spec timeout' do
     expect { amqp { EM.add_timer(2) { done } } }.
         to raise_error SpecTimeoutExceededError
-    (Time.now-@start).should be_close(1.0, 0.1)
+    (Time.now-@start).should be_within(0.1).of(1.0)
   end
 
   it 'should timeout before reaching done because of explicit in-loop timeout' do
