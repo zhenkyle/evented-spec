@@ -1,7 +1,9 @@
 require 'spec_helper'
 
-def hook(symbol, reactor, connection)
-  @hooks_called << symbol.to_sym if symbol
+# Registers specific hook type as being called,
+# sets expectations about EM reactor and AMQP connection state
+def hook(type, reactor, connection)
+  @hooks_called << type.to_sym if type
   if :reactor_running == reactor
     EM.reactor_running?.should be_true
   else
@@ -88,7 +90,7 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
     context 'for non-evented specs' do
       after {
         @hooks_called.should == [:before]
-        hook :reactor_not_running, :amqp_not_connected }
+        hook :after, :reactor_not_running, :amqp_not_connected }
 
       it 'should NOT execute em_before or em_after' do
         @hooks_called.should_not include :em_before
@@ -109,7 +111,7 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
     context 'for evented specs' do #, pending: true do
       after {
         @hooks_called.should include :before, :em_before, :em_after
-        hook :reactor_not_running, :amqp_not_connected }
+        hook :after, :reactor_not_running, :amqp_not_connected }
 
       context 'with em block' do
 
@@ -143,7 +145,7 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
                                                :context_em_before,
                                                :context_em_after,
                                                :em_after
-          hook :reactor_not_running, :amqp_not_connected
+          hook :after, :reactor_not_running, :amqp_not_connected
           }
 
           it_should_behave_like 'hooked em specs'
@@ -200,7 +202,7 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
                                            :amqp_after,
                                            :amqp_context_em_after,
                                            :em_after]
-          hook :reactor_not_running, :amqp_not_connected }
+          hook :after, :reactor_not_running, :amqp_not_connected }
 
           it_should_behave_like 'hooked amqp specs'
 
