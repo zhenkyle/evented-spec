@@ -18,31 +18,36 @@ end
 def done
 end
 
-RSPEC = rspec2? ? RSpec : Spec
+RSPEC       = rspec2? ? RSpec : Spec
 
 amqp_config = File.dirname(__FILE__) + '/amqp.yml'
 
-if File.exists? amqp_config
-  class Hash
-    def symbolize_keys
-      self.inject({}) { |result, (key, value)|
-        new_key = case key
-                    when String then
-                      key.to_sym
-                    else
-                      key
+AMQP_OPTS   = unless File.exists? amqp_config
+                {:user  => 'guest',
+                 :pass  => 'guest',
+                 :host  => '10.211.55.2',
+                 :vhost => '/'}
+              else
+                class Hash
+                  def symbolize_keys
+                    self.inject({}) { |result, (key, value)|
+                      new_key         = case key
+                                          when String then
+                                            key.to_sym
+                                          else
+                                            key
+                                        end
+                      new_value       = case value
+                                          when Hash then
+                                            value.symbolize_keys
+                                          else
+                                            value
+                                        end
+                      result[new_key] = new_value
+                      result
+                    }
                   end
-        new_value = case value
-                      when Hash then
-                        value.symbolize_keys
-                      else
-                        value
-                    end
-        result[new_key] = new_value
-        result
-      }
-    end
-  end
+                end
 
-  AMQP_OPTS = YAML::load_file(amqp_config).symbolize_keys[:test]
-end
+                YAML::load_file(amqp_config).symbolize_keys[:test]
+              end
