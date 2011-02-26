@@ -103,7 +103,7 @@ shared_examples_for 'timeout examples' do
 
   it 'should timeout before reaching done because of default spec timeout' do
     expect { amqp { EM.add_timer(2) { done } } }.
-        to raise_error SpecTimeoutExceededError
+        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(1.0)
   end
 
@@ -113,19 +113,19 @@ shared_examples_for 'timeout examples' do
         timeout(0.2)
         EM.add_timer(0.5) { done }
       end
-    }.to raise_error SpecTimeoutExceededError
+    }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "spec timeout given in amqp options has higher priority than default" do
     expect { amqp(:spec_timeout => 0.2) {} }.
-        to raise_error SpecTimeoutExceededError
+        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "but timeout call inside amqp loop has even higher priority" do
     expect { amqp(:spec_timeout => 0.5) { timeout(0.2) } }.
-        to raise_error SpecTimeoutExceededError
+        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
@@ -137,7 +137,7 @@ shared_examples_for 'timeout examples' do
     default_timeout 0.2 # Can be used to set default :spec_timeout for all evented specs
 
     specify 'default timeout should be 0.2' do
-      expect { em { EM.add_timer(2) { done } } }.to raise_error SpecTimeoutExceededError
+      expect { em { EM.add_timer(2) { done } } }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
       (Time.now-@start).should be_within(0.1).of(0.2)
     end
 
@@ -145,7 +145,7 @@ shared_examples_for 'timeout examples' do
       default_timeout 0.5
 
       specify 'default timeout should be 0.5' do
-        expect { amqp { EM.add_timer(2) { done } } }.to raise_error SpecTimeoutExceededError
+        expect { amqp { EM.add_timer(2) { done } } }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
         (Time.now-@start).should be_within(0.1).of(0.5)
       end
     end

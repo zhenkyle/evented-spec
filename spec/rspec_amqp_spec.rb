@@ -32,8 +32,7 @@ describe 'Evented AMQP specs' do
 
     it_should_behave_like 'SpecHelper examples'
     
-    context 'inside embedded context / example group' do
-    
+    context 'inside embedded context / example group' do      
       it_should_behave_like 'SpecHelper examples'
     end
   end

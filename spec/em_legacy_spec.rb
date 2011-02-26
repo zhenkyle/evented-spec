@@ -26,7 +26,7 @@ describe 'Legacy EM-Spec based examples should run unmodified' do
         em(0.5) do
           EM.add_timer(1) { done }
         end
-      }.to raise_error SpecTimeoutExceededError
+      }.to raise_error EM::SpecHelper::SpecTimeoutExceededError
       (Time.now-start).should be_within(0.5).of(0.1)
     end
 
@@ -36,7 +36,7 @@ describe 'Legacy EM-Spec based examples should run unmodified' do
         em(0.5) do
           EM.add_timer(1) { done }
         end
-      }.to raise_error SpecTimeoutExceededError
+      }.to raise_error EM::SpecHelper::SpecTimeoutExceededError
       (Time.now-start).should be_within(0.1).of(0.5)
     end
   end
