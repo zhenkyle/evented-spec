@@ -41,7 +41,7 @@ describe 'Plain EM, no AMQP' do
 
   describe EventMachine, " when testing with AMQP::Spec" do
     include AMQP::EMSpec
-
+    
     it_should_behave_like 'Spec examples'
   end
 end

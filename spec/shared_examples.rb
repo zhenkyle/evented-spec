@@ -153,10 +153,9 @@ shared_examples_for 'timeout examples' do
 end
 
 shared_examples_for 'Spec examples' do
-  after do
-    EM.reactor_running?.should == true
-#      AMQP.conn.should be_nil # You're inside running amqp block, stupid!
-    done
+  after(:each) do
+    # By this time, EM loop is stopped, either by timeout, or by exception
+    EM.reactor_running?.should == false
   end
 
   it 'should work' do
