@@ -15,6 +15,7 @@ module AMQP
       @closing = true
       @conn.close {
         yield if block_given?
+        @conn = nil
         cleanup_state
       }
     end

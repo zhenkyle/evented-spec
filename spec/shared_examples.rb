@@ -11,7 +11,7 @@ shared_examples_for 'SpecHelper examples' do
   it "should properly work" do
     amqp { done }
   end
-
+  
   it "should have timers" do
     start = Time.now
     amqp do
@@ -21,7 +21,7 @@ shared_examples_for 'SpecHelper examples' do
       }
     end
   end
-
+  
   it 'should have deferrables' do
     amqp do
       defr = EM::DefaultDeferrable.new
@@ -31,14 +31,14 @@ shared_examples_for 'SpecHelper examples' do
       }
     end
   end
-
+  
   it "should run AMQP.start loop with options given to #amqp" do
     amqp(:vhost => '/', :user => 'guest') do
       AMQP.conn.should be_connected
       done
     end
   end
-
+  
   it "should properly close AMQP connection if block completes normally" do
     amqp do
       AMQP.conn.should be_connected
@@ -46,20 +46,20 @@ shared_examples_for 'SpecHelper examples' do
     end
     AMQP.conn.should be_nil
   end
-
+  
   # TODO: remove dependency on (possibly long) DNS lookup
   it "should gracefully exit if no AMQP connection was made" do
     expect {
-      amqp(:host => 'Impossible') do
+      amqp(:host => '192.168.0.256') do
         AMQP.conn.should be_nil
         done
       end
     }.to raise_error EventMachine::ConnectionError
     AMQP.conn.should be_nil
   end
-
+  
   it_should_behave_like 'done examples'
-
+  
   it_should_behave_like 'timeout examples'
 end
 

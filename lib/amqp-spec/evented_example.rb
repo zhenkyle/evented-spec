@@ -60,12 +60,12 @@ module AMQP
             begin
               yield
             rescue Exception => @spec_exception
-#              p "Inside loop, caught #{@spec_exception}"
+              # p "Inside loop, caught #{@spec_exception.class.name}: #{@spec_exception}"
               done # We need to properly terminate the event loop
             end
           end
         rescue Exception => @spec_exception
-#          p "Outside loop, caught #{@spec_exception}"
+          # p "Outside loop, caught #{@spec_exception.class.name}: #{@spec_exception}"
           run_em_hooks :em_after # Event loop broken, but we still need to run em_after hooks
         ensure
           finish_example
@@ -135,14 +135,17 @@ module AMQP
           yield if block_given?
           EM.next_tick do
             run_em_hooks :amqp_after
-            if AMQP.conn and not AMQP.closing
+            if AMQP.conn && !AMQP.conn.closing?
               AMQP.stop_connection do
-                AMQP.cleanup_state
-                finish_em_loop
+                # Cannot call finish_em_loop before connection is marked as closed
+                # This callback is called before that happens.
+                EM.next_tick { finish_em_loop }
               end
             else
+              # Need this branch because if AMQP couldn't connect,
+              # the callback would never trigger
               AMQP.cleanup_state
-              finish_em_loop
+              EM.next_tick { finish_em_loop }
             end
           end
         end

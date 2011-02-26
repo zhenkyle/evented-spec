@@ -2,17 +2,21 @@ require 'spec_helper'
 
 # Registers specific hook type as being called,
 # sets expectations about EM reactor and AMQP connection state
-def hook(type, reactor, connection)
-  @hooks_called << type.to_sym if type
-  if :reactor_running == reactor
-    EM.reactor_running?.should be_true
-  else
-    EM.reactor_running?.should be_false
-  end
-  if :amqp_connected == connection
-    AMQP.conn.should be_connected
-  else
-    AMQP.conn and AMQP.conn.should_not be_connected
+module HookHelper
+  def hook(type, reactor, connection)
+    @hooks_called << type.to_sym if type
+    if :reactor_running == reactor
+      EM.reactor_running?.should be_true
+    else
+      EM.reactor_running?.should be_false
+    end
+    if :amqp_connected == connection
+      AMQP.conn.should be_connected
+    else
+      if AMQP.conn
+        AMQP.conn.connected?.should be_false
+      end
+    end
   end
 end
 
@@ -78,14 +82,14 @@ end
 
 describe AMQP::SpecHelper, ".em_before/.em_after" do
   before { @hooks_called = [] }
-
+  include HookHelper
   describe AMQP, " tested with AMQP::SpecHelper" do
     include AMQP::SpecHelper
     default_options AMQP_OPTS if defined? AMQP_OPTS
 
     before { hook :before, :reactor_not_running, :amqp_not_connected }
     em_before { hook :em_before, :reactor_running, :amqp_not_connected }
-    em_after { hook :em_after, :reactor_running, :amqp_not_connected }
+    em_after { hook(:em_after, :reactor_running, :amqp_not_connected) }
 
     context 'for non-evented specs' do
       after {
@@ -109,9 +113,10 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
     end # context 'for non-evented specs'
 
     context 'for evented specs' do #, pending: true do
-      after {
+      after do
         @hooks_called.should include :before, :em_before, :em_after
-        hook :after, :reactor_not_running, :amqp_not_connected }
+        hook :after, :reactor_not_running, :amqp_not_connected
+      end
 
       context 'with em block' do
 
@@ -125,13 +130,13 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
         end
 
         it 'should not run hooks from unrelated group' do
-          em do
-            @hooks_called.should_not include :amqp_context_em_before,
-                                             :amqp_context_before,
-                                             :amqp_before,
-                                             :context_amqp_before
-            done
-          end
+           em do
+             @hooks_called.should_not include :amqp_context_em_before,
+                                              :amqp_context_before,
+                                              :amqp_before,
+                                              :context_amqp_before
+             done
+           end
         end
 
         context 'inside nested example group' do
@@ -139,14 +144,15 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
           em_before { hook :context_em_before, :reactor_running, :amqp_not_connected }
           em_after { hook :context_em_after, :reactor_running, :amqp_not_connected }
 
-          after { @hooks_called.should include :before,
-                                               :context_before,
-                                               :em_before,
-                                               :context_em_before,
-                                               :context_em_after,
-                                               :em_after
-          hook :after, :reactor_not_running, :amqp_not_connected
-          }
+          after do
+            @hooks_called.should include :before,
+                                         :context_before,
+                                         :em_before,
+                                         :context_em_before,
+                                         :context_em_after,
+                                         :em_after
+            hook :after, :reactor_not_running, :amqp_not_connected
+          end
 
           it_should_behave_like 'hooked em specs'
 
