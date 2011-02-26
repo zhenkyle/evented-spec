@@ -188,7 +188,7 @@ module AMQP
     module ClassMethods
       def it(*args, &block)
         if block
-          new_block = lambda { amqp(&block) }
+          new_block = Proc.new {|example_group_instance| (example_group_instance || self).instance_eval { amqp(&block) } }
           super(*args, &new_block)
         else
           # pending example
@@ -210,7 +210,9 @@ module AMQP
     module ClassMethods
       def it(*args, &block)
         if block
-          new_block = lambda { em(&block) }
+          # Shared example groups seem to pass example group instance
+          # to the actual example block
+          new_block = Proc.new {|example_group_instance| (example_group_instance || self).instance_eval { em(&block) } }
           super(*args, &new_block)
         else
           # pending example
