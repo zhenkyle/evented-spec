@@ -162,13 +162,13 @@ module AMQP
     # callback is due, leading to SpecTimeoutExceededError
     #
     def done(*args, &block)
-      @evented_example.done *args, &block
+      @evented_example.done *args, &block if @evented_example
     end
 
     # Manually sets timeout for currently running example
     #
     def timeout(*args)
-      @evented_example.timeout *args
+      @evented_example.timeout *args if @evented_example
     end
 
   end # module SpecHelper
