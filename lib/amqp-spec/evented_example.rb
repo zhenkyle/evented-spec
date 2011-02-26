@@ -42,11 +42,7 @@ module AMQP
       #
       def run_em_hooks(type)
         @example_group_instance.class.em_hooks[type].each do |hook|
-          if @example_group_instance.respond_to? :instance_eval_without_event_loop
-            @example_group_instance.instance_eval_without_event_loop(&hook)
-          else
-            @example_group_instance.instance_eval(&hook) #_with_rescue(&hook)
-          end
+          @example_group_instance.instance_eval(&hook) #_with_rescue(&hook)
         end
       end
 
@@ -99,7 +95,9 @@ module AMQP
 
       # Run @block inside the EM.run event loop
       def run
-        run_em_loop &@block
+        run_em_loop do
+          @example_group_instance.instance_eval(&@block)
+        end
       end
 
       # Breaks the EM event loop and finishes the spec.
@@ -124,7 +122,7 @@ module AMQP
         run_em_loop do
           AMQP.start_connection(@opts) do
             run_em_hooks :amqp_before
-            @block.call
+            @example_group_instance.instance_eval(&@block)
           end
         end
       end

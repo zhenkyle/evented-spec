@@ -182,15 +182,20 @@ module AMQP
   module Spec
     def self.included(example_group)
       example_group.send(:include, SpecHelper)
+      example_group.extend(ClassMethods)
     end
 
-    alias instance_eval_without_event_loop instance_eval
-
-    def instance_eval(&block)
-      amqp do
-        super(&block)
-      end
-    end
+    module ClassMethods
+      def it(*args, &block)
+        if block
+          new_block = lambda { amqp(&block) }
+          super(*args, &new_block)
+        else
+          # pending example
+          super
+        end
+      end # it
+    end # ClassMethods
   end
 
   # Including AMQP::EMSpec module into your example group, each example of this group
@@ -199,14 +204,19 @@ module AMQP
   module EMSpec
     def self.included(example_group)
       example_group.send(:include, SpecHelper)
+      example_group.extend ClassMethods
     end
 
-    alias instance_eval_without_event_loop instance_eval
-
-    def instance_eval(&block)
-      em do
-        super(&block)
-      end
-    end
+    module ClassMethods
+      def it(*args, &block)
+        if block
+          new_block = lambda { em(&block) }
+          super(*args, &new_block)
+        else
+          # pending example
+          super
+        end
+      end # it
+    end # ClassMethods
   end
 end
