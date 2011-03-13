@@ -9,32 +9,43 @@ module EventedSpec
         @opts, @example_group_instance, @block = opts, example_group_instance, block
       end
 
-      # Sets timeout for currently running example
+      # Called from #run_event_loop when event loop is stopped,
+      # but before the example returns.
+      # Descendant classes may redefine to clean up type-specific state.
       #
+      def finish_example
+        raise @spec_exception if @spec_exception
+      end
+
+      # Run the example
+      # @override
+      def run
+        raise NotImplementedError, "you should implement #run in #{self.class.name}"
+      end
+
+      # Sets timeout for currently running example
+      # @override
       def timeout(spec_timeout)
-        EM.cancel_timer(@spec_timer) if @spec_timer
-        @spec_timer = EM.add_timer(spec_timeout) do
-          @spec_exception = SpecTimeoutExceededError.new "Example timed out"
-          done
-        end
+        raise NotImplementedError, "you should implement #timeout in #{self.class.name}"
       end
 
       # Breaks the event loop and finishes the spec.
-      #
-      # This is under-implemented (generic) method that only implements optional delay.
-      # It should be given a block that does actual work of finishing up the event loop
-      # and cleaning any remaining artifacts.
-      #
-      # Please redefine it inside descendant class and call super.
-      #
+      # @override
       def done(delay=nil, &block)
-        if delay
-          EM.add_timer delay, &block
-        else
-          block.call
-        end
+        raise NotImplementedError, "you should implement #done method in #{self.class.name}"
       end
 
+      # Override this method in your descendants
+      # @note delay may be nil, implying you need to execute the block immediately.
+      # @override
+      def delayed(delay = nil, &block)
+        raise NotImplementedError, "you should implement #delayed method in #{self.class.name}"
+      end # delayed(delay, &block)
+    end # class EventedExample
+
+
+    # Represents spec running inside EM.run loop
+    class EMExample < EventedExample
       # Runs hooks of specified type (hopefully, inside the event loop)
       #
       def run_em_hooks(type)
@@ -76,19 +87,14 @@ module EventedSpec
         EM.stop_event_loop if EM.reactor_running?
       end
 
-      # Called from #run_event_loop when event loop is stopped,
-      # but before the example returns.
-      # Descendant classes may redefine to clean up type-specific state.
-      #
-      def finish_example
-        raise @spec_exception if @spec_exception
+
+      def timeout(spec_timeout)
+        EM.cancel_timer(@spec_timer) if @spec_timer
+        @spec_timer = EM.add_timer(spec_timeout) do
+          @spec_exception = SpecTimeoutExceededError.new "Example timed out"
+          done
+        end
       end
-
-    end # class EventedExample
-
-
-    # Represents spec running inside EM.run loop
-    class EMExample < EventedExample
 
       # Run @block inside the EM.run event loop
       def run
@@ -101,19 +107,26 @@ module EventedSpec
       # Done yields to any given block first, then stops EM event loop.
       #
       def done(delay = nil)
-        super(delay) do
+        delayed(delay) do
           yield if block_given?
           EM.next_tick do
             finish_em_loop
           end
         end
       end # done
+
+      def delayed(delay, &block)
+        if delay
+          EM.add_timer delay, &block
+        else
+          yield
+        end
+      end # delayed
     end # class EMExample < EventedExample
 
 
     # Represents spec running inside AMQP.start loop
-    class AMQPExample < EventedExample
-
+    class AMQPExample < EMExample
       # Run @block inside the AMQP.start loop
       def run
         run_em_loop do
@@ -128,7 +141,7 @@ module EventedSpec
       # then stops AMQP, EM event loop and cleans up AMQP state.
       #
       def done(delay = nil)
-        super(delay) do
+        delayed(delay) do
           yield if block_given?
           EM.next_tick do
             run_em_hooks :amqp_after
@@ -154,7 +167,6 @@ module EventedSpec
         AMQP.cleanup_state
         super
       end
-
     end # class AMQPExample < EventedExample
   end # module SpecHelper
 end # module AMQP
