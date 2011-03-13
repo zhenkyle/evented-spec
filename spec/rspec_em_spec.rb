@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'Plain EM, no AMQP' do
-  describe EventMachine, " when testing with AMQP::SpecHelper" do
-    include AMQP::SpecHelper
+  describe EventMachine, " when testing with EventedSpec::SpecHelper" do
+    include EventedSpec::SpecHelper
 
     it "should not require a call to done when #em is not used" do
       1.should == 1
@@ -24,7 +24,7 @@ describe 'Plain EM, no AMQP' do
         em(0.5) do
           EM.add_timer(1) { done }
         end
-      }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+      }.to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
       (Time.now-start).should be_within(0.1).of(0.5)
     end
 
@@ -34,14 +34,14 @@ describe 'Plain EM, no AMQP' do
         em(0.5) do
           EM.add_timer(1) { done }
         end
-      }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+      }.to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
       (Time.now-start).should be_within(0.1).of(0.5)
     end
   end
 
-  describe EventMachine, " when testing with AMQP::Spec" do
-    include AMQP::EMSpec
-    
+  describe EventMachine, " when testing with EventedSpec::Spec" do
+    include EventedSpec::EMSpec
+
     it_should_behave_like 'Spec examples'
   end
 end

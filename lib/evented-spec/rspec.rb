@@ -1,22 +1,22 @@
-require 'amqp-spec/amqp'
-require 'amqp-spec/evented_example'
+require 'evented-spec/amqp'
+require 'evented-spec/evented_example'
 
 # You can include one of the following modules into your example groups:
-# AMQP::SpecHelper,
-# AMQP::Spec,
-# AMQP::EMSpec.
+# EventedSpec::SpecHelper,
+# EventedSpec::Spec,
+# EventedSpec::EMSpec.
 #
-# AMQP::SpecHelper module defines #ampq and #em methods that can be safely used inside
+# EventedSpec::SpecHelper module defines #ampq and #em methods that can be safely used inside
 # your specs (examples) to test code running inside AMQP.start or EM.run loop
 # respectively. Each example is running in a separate event loop,you can control
 # for timeouts either with :spec_timeout option given to #amqp/#em method or setting
 # a default timeout using default_timeout(timeout) macro inside describe/context block.
 #
-# If you include AMQP::Spec module into your example group, each example of this group
+# If you include EventedSpec::Spec module into your example group, each example of this group
 # will run inside AMQP.start loop without the need to explicitly call 'amqp'. In order to
 # provide options to AMQP loop, default_options({opts}) macro is defined.
 #
-# Including AMQP::EMSpec module into your example group, each example of this group will
+# Including EventedSpec::EMSpec module into your example group, each example of this group will
 # run inside EM.run loop without the need to explicitly call 'em'.
 #
 # In order to stop AMQP/EM loop, you should call 'done' AFTER you are sure that your
@@ -24,9 +24,9 @@ require 'amqp-spec/evented_example'
 # subscribe block that tests expectations on messages, 'done' should be probably called
 # at the end of this block.
 #
-module AMQP
+module EventedSpec
 
-  # AMQP::SpecHelper module defines #ampq and #em methods that can be safely used inside
+  # EventedSpec::SpecHelper module defines #ampq and #em methods that can be safely used inside
   # your specs (examples) to test code running inside AMQP.start or EM.run loop
   # respectively. Each example is running in a separate event loop,you can control
   # for timeouts either with :spec_timeout option given to #amqp/#em method or setting
@@ -173,10 +173,10 @@ module AMQP
 
   end # module SpecHelper
 
-  # If you include AMQP::Spec module into your example group, each example of this group
+  # If you include EventedSpec::Spec module into your example group, each example of this group
   # will run inside AMQP.start loop without the need to explicitly call 'amqp'. In order
   # to provide options to AMQP loop, default_options class method is defined. Remember,
-  # when using AMQP::Specs, you'll have a single set of AMQP.start options for all your
+  # when using EventedSpec::Specs, you'll have a single set of AMQP.start options for all your
   # examples.
   #
   module Spec
@@ -198,7 +198,7 @@ module AMQP
     end # ClassMethods
   end
 
-  # Including AMQP::EMSpec module into your example group, each example of this group
+  # Including EventedSpec::EMSpec module into your example group, each example of this group
   # will run inside EM.run loop without the need to explicitly call 'em'.
   #
   module EMSpec

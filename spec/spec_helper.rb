@@ -5,7 +5,7 @@ Bundler.setup
 Bundler.require :default, :test
 
 require 'yaml'
-require 'amqp-spec/rspec'
+require 'evented-spec/rspec'
 require 'shared_examples'
 
 require 'mq'

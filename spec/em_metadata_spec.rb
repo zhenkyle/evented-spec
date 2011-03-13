@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe AMQP::SpecHelper, " .metadata" do
-  include AMQP::SpecHelper
+describe EventedSpec::SpecHelper, " .metadata" do
+  include EventedSpec::SpecHelper
   root_metadata = metadata
 
   it 'example metadata starts as a copy of example group metadata' do

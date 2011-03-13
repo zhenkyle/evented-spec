@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe AMQP::SpecHelper, " .default_options" do
-  include AMQP::SpecHelper
+describe EventedSpec::SpecHelper, " .default_options" do
+  include EventedSpec::SpecHelper
   root_default_options = {:root_key => 1}
   default_options root_default_options
 

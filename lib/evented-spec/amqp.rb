@@ -11,7 +11,6 @@ module AMQP
   # Closes AMQP connection gracefully
   def self.stop_connection
     if AMQP.conn and not AMQP.closing
-#   MQ.reset ?
       @closing = true
       @conn.close {
         yield if block_given?
@@ -23,7 +22,6 @@ module AMQP
 
   # Cleans up AMQP state after AMQP connection closes
   def self.cleanup_state
-#   MQ.reset ?
     Thread.list.each { |thread| thread[:mq] = nil }
     Thread.list.each { |thread| thread[:mq_id] = nil }
     @conn    = nil

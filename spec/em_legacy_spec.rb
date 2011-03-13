@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'amqp-spec/em_spec_shim'
+require 'evented-spec/em_spec_shim'
 
 describe 'Legacy EM-Spec based examples should run unmodified' do
   describe EM::SpecHelper, ' when included' do

@@ -1,7 +1,4 @@
-#require 'fiber' unless Fiber.respond_to?(:current)
-
-module AMQP
-
+module EventedSpec
   module SpecHelper
 
     # Represents example running inside some type of event loop

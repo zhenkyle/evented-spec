@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Following 8 examples should all be failing:' do
   describe EventMachine, " when running failing examples" do
-    include AMQP::EMSpec
+    include EventedSpec::EMSpec
 
     it "should not bubble failures beyond rspec" do
       EM.add_timer(0.1) do
@@ -16,8 +16,8 @@ describe 'Following 8 examples should all be failing:' do
     end
   end
 
-  describe EventMachine, " when testing with AMQP::EMSpec with a maximum execution time per test" do
-    include AMQP::EMSpec
+  describe EventMachine, " when testing with EventedSpec::EMSpec with a maximum execution time per test" do
+    include EventedSpec::EMSpec
 
     default_timeout 1
 
@@ -31,9 +31,9 @@ describe 'Following 8 examples should all be failing:' do
     end
   end
 
-  describe AMQP, " when testing with AMQP::Spec with a maximum execution time per test" do
+  describe AMQP, " when testing with EventedSpec::Spec with a maximum execution time per test" do
 
-    include AMQP::Spec
+    include EventedSpec::Spec
 
     default_timeout 1
 

@@ -80,11 +80,11 @@ shared_examples_for 'hooked amqp specs' do
   end
 end
 
-describe AMQP::SpecHelper, ".em_before/.em_after" do
+describe EventedSpec::SpecHelper, ".em_before/.em_after" do
   before { @hooks_called = [] }
   include HookHelper
-  describe AMQP, " tested with AMQP::SpecHelper" do
-    include AMQP::SpecHelper
+  describe AMQP, " tested with EventedSpec::SpecHelper" do
+    include EventedSpec::SpecHelper
     default_options AMQP_OPTS if defined? AMQP_OPTS
 
     before { hook :before, :reactor_not_running, :amqp_not_connected }
@@ -227,5 +227,5 @@ describe AMQP::SpecHelper, ".em_before/.em_after" do
         end # context 'inside nested example group'
       end # context 'with amqp block'
     end # context 'for evented specs'
-  end # describe AMQP, " tested with AMQP::SpecHelper"
-end # describe AMQP, " with em_before/em_after"
+  end # describe EventedSpec, " tested with EventedSpec::SpecHelper"
+end # describe EventedSpec, " with em_before/em_after"

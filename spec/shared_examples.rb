@@ -11,7 +11,7 @@ shared_examples_for 'SpecHelper examples' do
   it "should properly work" do
     amqp { done }
   end
-  
+
   it "should have timers" do
     start = Time.now
     amqp do
@@ -21,7 +21,7 @@ shared_examples_for 'SpecHelper examples' do
       }
     end
   end
-  
+
   it 'should have deferrables' do
     amqp do
       defr = EM::DefaultDeferrable.new
@@ -31,14 +31,14 @@ shared_examples_for 'SpecHelper examples' do
       }
     end
   end
-  
+
   it "should run AMQP.start loop with options given to #amqp" do
     amqp(:vhost => '/', :user => 'guest') do
       AMQP.conn.should be_connected
       done
     end
   end
-  
+
   it "should properly close AMQP connection if block completes normally" do
     amqp do
       AMQP.conn.should be_connected
@@ -46,7 +46,7 @@ shared_examples_for 'SpecHelper examples' do
     end
     AMQP.conn.should be_nil
   end
-  
+
   # TODO: remove dependency on (possibly long) DNS lookup
   it "should gracefully exit if no AMQP connection was made" do
     expect {
@@ -57,9 +57,9 @@ shared_examples_for 'SpecHelper examples' do
     }.to raise_error EventMachine::ConnectionError
     AMQP.conn.should be_nil
   end
-  
+
   it_should_behave_like 'done examples'
-  
+
   it_should_behave_like 'timeout examples'
 end
 
@@ -103,7 +103,7 @@ shared_examples_for 'timeout examples' do
 
   it 'should timeout before reaching done because of default spec timeout' do
     expect { amqp { EM.add_timer(2) { done } } }.
-        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+        to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(1.0)
   end
 
@@ -113,19 +113,19 @@ shared_examples_for 'timeout examples' do
         timeout(0.2)
         EM.add_timer(0.5) { done }
       end
-    }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+    }.to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "spec timeout given in amqp options has higher priority than default" do
     expect { amqp(:spec_timeout => 0.2) {} }.
-        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+        to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
   specify "but timeout call inside amqp loop has even higher priority" do
     expect { amqp(:spec_timeout => 0.5) { timeout(0.2) } }.
-        to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+        to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
     (Time.now-@start).should be_within(0.1).of(0.2)
   end
 
@@ -137,7 +137,7 @@ shared_examples_for 'timeout examples' do
     default_timeout 0.2 # Can be used to set default :spec_timeout for all evented specs
 
     specify 'default timeout should be 0.2' do
-      expect { em { EM.add_timer(2) { done } } }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+      expect { em { EM.add_timer(2) { done } } }.to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
       (Time.now-@start).should be_within(0.1).of(0.2)
     end
 
@@ -145,7 +145,7 @@ shared_examples_for 'timeout examples' do
       default_timeout 0.5
 
       specify 'default timeout should be 0.5' do
-        expect { amqp { EM.add_timer(2) { done } } }.to raise_error AMQP::SpecHelper::SpecTimeoutExceededError
+        expect { amqp { EM.add_timer(2) { done } } }.to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
         (Time.now-@start).should be_within(0.1).of(0.5)
       end
     end
