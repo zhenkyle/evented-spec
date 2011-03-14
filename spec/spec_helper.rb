@@ -9,6 +9,7 @@ require 'evented-spec/rspec'
 require 'shared_examples'
 
 require 'mq'
+require 'cool.io'
 
 def rspec2?
   defined?(RSpec)

@@ -152,6 +152,15 @@ module EventedSpec
       @evented_example.run
     end
 
+    # Yields to block inside cool.io loop, :spec_timeout option (in seconds) is used to
+    # force spec to timeout if something goes wrong and EM/AMQP loop hangs for some
+    # reason. SpecTimeoutExceededError is raised if it happens.
+    def coolio(opts = {}, &block)
+      opts = default_options.merge opts
+      @evented_example = CoolioExample.new(opts, self, &block)
+      @evented_example.run
+    end
+
     # Breaks the event loop and finishes the spec. This should be called after
     # you are reasonably sure that your expectations either succeeded or failed.
     # Done yields to any given block first, then stops EM event loop.
