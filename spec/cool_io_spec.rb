@@ -46,7 +46,7 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
         coolio do
           :fail.should == :win
         end
-      }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+      }.to raise_error(RSPEC::Expectations::ExpectationNotMetError)
     end
   end
 

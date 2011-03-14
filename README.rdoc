@@ -4,7 +4,7 @@ url: http://github.com/ruby-amqp/amqp-spec
 
 == Summary
 
-Simple API for writing asynchronous EventMachine/AMQP specs. Supports RSpec and RSpec2.
+Simple API for writing asynchronous EventMachine/AMQP/Cool.io specs. Supports RSpec and RSpec2.
 Should work under MRI 1.8.7, 1.9.2 (and JRuby 1.6.0 - work in progress!)
 
 == Description
