@@ -38,7 +38,7 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
       expect {
         coolio do
         end
-      }.to raise_error(SpecTimeoutExceededError)
+      }.to raise_error(EventedSpec::SpecHelper::SpecTimeoutExceededError)
     end
 
     it "should propagate mismatched rspec expectations" do
