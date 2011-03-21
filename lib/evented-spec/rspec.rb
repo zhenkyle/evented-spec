@@ -3,7 +3,7 @@ require 'evented-spec/evented_example'
 
 # You can include one of the following modules into your example groups:
 # EventedSpec::SpecHelper,
-# EventedSpec::Spec,
+# EventedSpec::AMQPSpec,
 # EventedSpec::EMSpec.
 #
 # EventedSpec::SpecHelper module defines #ampq and #em methods that can be safely used inside
@@ -182,13 +182,13 @@ module EventedSpec
 
   end # module SpecHelper
 
-  # If you include EventedSpec::Spec module into your example group, each example of this group
+  # If you include EventedSpec::AMQPSpec module into your example group, each example of this group
   # will run inside AMQP.start loop without the need to explicitly call 'amqp'. In order
   # to provide options to AMQP loop, default_options class method is defined. Remember,
   # when using EventedSpec::Specs, you'll have a single set of AMQP.start options for all your
   # examples.
   #
-  module Spec
+  module AMQPSpec
     def self.included(example_group)
       example_group.send(:include, SpecHelper)
       example_group.extend(ClassMethods)

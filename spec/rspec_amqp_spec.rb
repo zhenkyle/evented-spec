@@ -37,8 +37,8 @@ describe 'Evented AMQP specs' do
     end
   end
 
-  describe AMQP, " when testing with EventedSpec::Spec" do
-    include EventedSpec::Spec
+  describe AMQP, " when testing with EventedSpec::AMQPSpec" do
+    include EventedSpec::AMQPSpec
 
     default_options AMQP_OPTS if defined? AMQP_OPTS
     default_timeout 1

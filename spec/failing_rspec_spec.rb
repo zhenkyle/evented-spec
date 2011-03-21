@@ -31,9 +31,9 @@ describe 'Following 8 examples should all be failing:' do
     end
   end
 
-  describe AMQP, " when testing with EventedSpec::Spec with a maximum execution time per test" do
+  describe AMQP, " when testing with EventedSpec::AMQPSpec with a maximum execution time per test" do
 
-    include EventedSpec::Spec
+    include EventedSpec::AMQPSpec
 
     default_timeout 1
 
