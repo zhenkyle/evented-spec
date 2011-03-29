@@ -10,7 +10,7 @@ module AMQP
 
   # Closes AMQP connection gracefully
   def self.stop_connection
-    if AMQP.conn and not AMQP.closing
+    if AMQP.connect and not AMQP.closing
       @closing = true
       @conn.close {
         yield if block_given?
