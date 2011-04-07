@@ -14,7 +14,8 @@ module EventedSpec
         delayed(0) do
           begin
             @example_group_instance.instance_eval(&@block)
-          rescue Exception => @spec_exception
+          rescue Exception => e
+            @spec_exception ||= e
             done
           end
         end
@@ -24,7 +25,7 @@ module EventedSpec
 
       def timeout(time = 1)
         @spec_timer = delayed(time) do
-          @spec_exception = SpecTimeoutExceededError.new("timed out")
+          @spec_exception ||= SpecTimeoutExceededError.new("timed out")
           done
         end
       end

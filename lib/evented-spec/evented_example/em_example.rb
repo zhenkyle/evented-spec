@@ -23,12 +23,14 @@ module EventedSpec
             timeout(@opts[:spec_timeout]) if @opts[:spec_timeout]
             begin
               yield
-            rescue Exception => @spec_exception
+            rescue Exception => e
+              @spec_exception ||= e
               # p "Inside loop, caught #{@spec_exception.class.name}: #{@spec_exception}"
               done # We need to properly terminate the event loop
             end
           end
-        rescue Exception => @spec_exception
+        rescue Exception => e
+          @spec_exception ||= e
           # p "Outside loop, caught #{@spec_exception.class.name}: #{@spec_exception}"
           run_em_hooks :em_after # Event loop broken, but we still need to run em_after hooks
         ensure
