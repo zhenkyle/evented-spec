@@ -1,20 +1,17 @@
 # Monkey patching some methods into AMQP to make it more testable
 module AMQP
-
   # Initializes new AMQP client/connection without starting another EM loop
   def self.start_connection(opts={}, &block)
-#    puts "!!!!!!!!! Existing connection: #{@conn}" if @conn
-    @conn = connect opts
-    @conn.callback(&block) if block
+    self.connection = connect opts, &block
   end
 
   # Closes AMQP connection gracefully
   def self.stop_connection
-    if AMQP.connect and not AMQP.closing
+    if AMQP.connection and not AMQP.connection.closing?
       @closing = true
-      @conn.close {
+      self.connection.close {
         yield if block_given?
-        @conn = nil
+        self.connection = nil
         cleanup_state
       }
     end
@@ -24,7 +21,7 @@ module AMQP
   def self.cleanup_state
     Thread.list.each { |thread| thread[:mq] = nil }
     Thread.list.each { |thread| thread[:mq_id] = nil }
-    @conn    = nil
+    self.connection = nil
     @closing = false
   end
 end
