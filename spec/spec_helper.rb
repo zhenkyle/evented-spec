@@ -8,7 +8,7 @@ require 'yaml'
 require 'evented-spec/rspec'
 require 'shared_examples'
 
-require 'mq'
+require 'amqp'
 require 'cool.io'
 
 def rspec2?
