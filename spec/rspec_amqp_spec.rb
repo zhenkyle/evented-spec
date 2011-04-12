@@ -1,15 +1,20 @@
 require 'spec_helper'
 
 def publish_and_consume_once(queue_name="test_sink", data="data")
-  amqp do
-    q = MQ.queue(queue_name)
-    q.subscribe do |hdr, msg|
-      hdr.should be_an MQ::Header
-      msg.should == data
-      done { q.unsubscribe; q.delete }
-    end
-    EM.add_timer(0.2) do
-      MQ.queue(queue_name).publish data
+  amqp(:spec_timeout => 0.5) do
+    AMQP::Channel.new do |channel|
+      exchange = channel.direct(queue_name)
+      queue = channel.queue(queue_name).bind(exchange)
+      queue.subscribe do |hdr, msg|
+        hdr.should be_an AMQP::Header
+        msg.should == data
+        done { queue.unsubscribe; queue.delete }
+      end
+      EM.add_timer(0.2) do
+        AMQP::Channel.new do |other_channel|
+          exchange.publish data
+        end
+      end
     end
   end
 end
@@ -87,7 +92,7 @@ describe 'Evented AMQP specs' do
     end
   end
 
-  describe 'MQ', " when MQ.queue/fanout/topic tries to access Thread.current[:mq] across examples" do
+  describe 'MQ', " when AMQP.queue/fanout/topic tries to access Thread.current[:mq] across examples" do
     include EventedSpec::SpecHelper
 
     default_options AMQP_OPTS if defined? AMQP_OPTS
