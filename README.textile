@@ -100,15 +100,16 @@ So, the order of hooks is as follows: @before(:all)@, @before(:each)@,
 <pre><code>
   describe "using amqp hooks" do
     include EventedSpec::AMQPSpec
-    default_options :vhost => "/"
+    default_timeout 0.5
     amqp_before do
       AMQP.connection.should_not be_nil
     end
 
+    let(:data) { "Test string" }
     it "should do something useful" do
       AMQP::Channel.new do |channel, _|
-        exchange = channel.direct(queue_name)
-        queue = channel.queue(queue_name).bind(exchange)
+        exchange = channel.direct("amqp-test-exchange")
+        queue = channel.queue("amqp-test-queue").bind(exchange)
         queue.subscribe do |hdr, msg|
           hdr.should be_an AMQP::Header
           msg.should == data
