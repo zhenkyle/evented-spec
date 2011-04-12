@@ -129,10 +129,11 @@ AMQP spec helpers are for newer version of AMQP gem, 0.8. If you need spec-helpe
 
 h2. See also
 
-You can see evented-spec at use in spec suites for our amqp gems, amq-client and amqp.
+You can see evented-spec in use in spec suites for our amqp gems, "amq-client":https://github.com/ruby-amqp/amq-client/tree/master/spec and "amqp":https://github.com/ruby-amqp/amqp/tree/master/spec.
 
 h2. Links
 
+* "cool.io":http://coolio.github.com/
 * "amqp-spec":https://github.com/ruby-amqp/amqp-spec
 * "eventmachine":http://eventmachine.rubyforge.org/
 * "amqp":https://github.com/ruby-amqp/amqp
