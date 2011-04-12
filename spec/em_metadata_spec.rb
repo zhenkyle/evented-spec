@@ -1,173 +1,43 @@
 require 'spec_helper'
 
-describe EventedSpec::SpecHelper, " .metadata" do
-  include EventedSpec::SpecHelper
-  root_metadata = metadata
+describe "Example Groups", ".evented_spec_metadata" do
+  context "when EventedSpec::SpecHelper is included" do
+    include EventedSpec::SpecHelper
+    it "should assign empty hash by default" do
+      self.class.evented_spec_metadata.should == {}
+    end
 
-  it 'example metadata starts as a copy of example group metadata' do
-    metadata.should == root_metadata
-  end
-
-  it 'can be changed, thus diverging from example group metadata' do
-    metadata[:example_key] = :example_value
-    metadata.should have_key :example_key
-    metadata.should_not == root_metadata
-  end
-
-  it 'changing example metadata has no effect on subsequent examples' do
-    metadata.should_not have_key :example_key
-    metadata.should == root_metadata
-  end
-
-  context 'inside nested example group 1' do
-    nested_metadata = metadata
-
-    if rspec2? #describes RSpec2-specific behavior
-      it 'nested group metadata CONTAINS root enclosing group metadata' do
-        nested_metadata.should_not == root_metadata
-        nested_metadata[:example_group][:example_group].should ==
-            root_metadata[:example_group]
+    context "in nested group" do
+      evented_spec_metadata[:nested] = {}
+      evented_spec_metadata[:other] = :value
+      it "should merge metadata" do
+        self.class.evented_spec_metadata.should == {:nested => {}, :other => :value}
       end
-    end
 
-    it 'except for :example_group key, nested and root group metadata is the same' do
-      @root = root_metadata.dup
-      @root.delete(:example_group)
-      @nested = nested_metadata.dup
-      @nested.delete(:example_group)
-      @nested.should == @root
-    end
+      context "in deeply nested group" do
+        evented_spec_metadata[:nested][:deeply] = {}
+        evented_spec_metadata[:other] = "hello"
+        it "should merge metadata" do
+          self.class.evented_spec_metadata[:nested][:deeply].should == {}
+        end
 
-    it 'example metadata starts as a copy of nested group metadata' do
-      metadata.should == nested_metadata
-    end
-
-    it 'can be changed, thus diverging from example group metadata' do
-      metadata[:example_key] = :example_value
-      metadata.should have_key :example_key
-      metadata.should_not == nested_metadata
-    end
-
-    it 'changing example metadata has no effect on subsequent examples' do
-      metadata.should_not have_key :example_key
-      metadata.should == nested_metadata
-    end
-
-    context 'inside deeply nested example group 1' do
-      deeply_nested_metadata = metadata
-
-      if rspec2? #describes RSpec2-specific behavior
-        it 'deeply_nested group metadata CONTAINS enclosing group metadata' do
-          deeply_nested_metadata.should_not == root_metadata
-          deeply_nested_metadata[:example_group][:example_group].should ==
-              nested_metadata[:example_group]
+        it "should allow to override merged metadata" do
+          self.class.evented_spec_metadata[:other].should == "hello"
         end
       end
 
-      it 'except for :example_group, deeply_nested and root group metadata is the same' do
-        @root = root_metadata.dup
-        @root.delete(:example_group)
-        @nested = nested_metadata.dup
-        @nested.delete(:example_group)
-        @deeply_nested = deeply_nested_metadata.dup
-        @deeply_nested.delete(:example_group)
-        @deeply_nested.should == @nested
-        @deeply_nested.should == @root
-      end
-
-      it 'example metadata starts as a copy of deeply_nested group metadata' do
-        metadata.should == deeply_nested_metadata
-      end
-
-      it 'can be changed, thus diverging from example group metadata' do
-        metadata[:example_key] = :example_value
-        metadata.should have_key :example_key
-        metadata.should_not == deeply_nested_metadata
-      end
-
-      it 'changing example metadata has no effect on subsequent examples' do
-        metadata.should_not have_key :example_key
-        metadata.should == deeply_nested_metadata
-      end
-    end # inside deeply nested example group 1
-  end # inside nested example group 1
-
-  context 'inside nested example group 2' do
-    metadata[:nested_key] = :nested_value
-    nested_metadata = metadata
-
-    if rspec2? #describes RSpec2-specific behavior
-      it 'nested group metadata CONTAINS root enclosing group metadata' do
-        nested_metadata.should_not == root_metadata
-        nested_metadata[:example_group][:example_group].should ==
-            root_metadata[:example_group]
-      end
-    end
-
-    it "except for :example_group and modified keys," +
-           "nested and root group metadata is the same" do
-      @root = root_metadata.dup
-      @root.delete(:example_group)
-      @nested = nested_metadata.dup
-      @nested.delete(:example_group)
-      @nested.delete(:nested_key)
-      @nested.should == @root
-    end
-
-    it 'example metadata starts as a copy of nested group metadata' do
-      metadata.should == nested_metadata
-    end
-
-    it 'can be changed, thus diverging from example group metadata' do
-      metadata[:example_key] = :example_value
-      metadata.should have_key :example_key
-      metadata.should_not == nested_metadata
-    end
-
-    it 'changing example metadata has no effect on subsequent examples' do
-      metadata.should_not have_key :example_key
-      metadata.should == nested_metadata
-    end
-
-    context 'inside deeply nested example group 2' do
-      metadata[:deeply_nested_key] = :deeply_nested_value
-      deeply_nested_metadata = metadata
-
-      if rspec2? #describes RSpec2-specific behavior
-        it 'deeply_nested group metadata CONTAINS enclosing group metadata' do
-          deeply_nested_metadata[:example_group][:example_group].should ==
-              nested_metadata[:example_group]
+      context "in other deeply nested group" do
+        evented_spec_metadata[:nested][:other] = {}
+        it "should diverge without being tainted by neighbouring example groups" do
+          self.class.evented_spec_metadata.should == {:nested => {:other => {}}, :other => :value}
         end
       end
+    end
+  end
 
-      it "except for :example_group and modified keys," +
-             "deeply nested and root group metadata is the same" do
-        @root = root_metadata.dup
-        @root.delete(:example_group)
-        @nested = nested_metadata.dup
-        @nested.delete(:example_group)
-        @deeply_nested = deeply_nested_metadata.dup
-        @deeply_nested.delete(:example_group)
-        @deeply_nested.delete(:deeply_nested_key)
-        @deeply_nested.should == @nested
-        @deeply_nested.delete(:nested_key)
-        @deeply_nested.should == @root
-      end
-
-      it 'example metadata starts as a copy of deeply_nested group metadata' do
-        metadata.should == deeply_nested_metadata
-      end
-
-      it 'can be changed, thus diverging from example group metadata' do
-        metadata[:example_key] = :example_value
-        metadata.should have_key :example_key
-        metadata.should_not == deeply_nested_metadata
-      end
-
-      it 'changing example metadata has no effect on subsequent examples' do
-        metadata.should_not have_key :example_key
-        metadata.should == deeply_nested_metadata
-      end
-    end # inside deeply nested example group 2
-  end # inside nested example group 2
-end # describe AMQP, "metadata"
+  context "when EventedSpec::SpecHelper is not included" do
+    it "should not be defined" do
+      self.class.should_not respond_to(:evented_spec_metadata)
+    end
+  end
+end

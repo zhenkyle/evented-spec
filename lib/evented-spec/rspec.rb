@@ -1,5 +1,6 @@
 require 'evented-spec/amqp'
 require 'evented-spec/evented_example'
+require 'evented-spec/util'
 
 # You can include one of the following modules into your example groups:
 # EventedSpec::SpecHelper,
@@ -41,29 +42,36 @@ module EventedSpec
     # You can use these methods as macros inside describe/context block.
     #
     module GroupMethods
-      unless respond_to? :metadata
-        # Hacking in metadata into RSpec1 to imitate Rspec2's metadata. Now you can add
-        # anything to metadata Hash to pass options into examples and nested groups.
-        #
-        def metadata
-          @metadata ||= superclass.metadata.dup rescue {}
+      def evented_spec_metadata
+        if @evented_spec_metadata
+          @evented_spec_metadata
+        else
+          @evented_spec_metadata = superclass.evented_spec_metadata rescue {}
+          @evented_spec_metadata = EventedSpec::Util.deep_clone(@evented_spec_metadata)
         end
-      end
+      end # evented_spec_metadata
 
       # Sets/retrieves default timeout for running evented specs for this
       # example group and its nested groups.
       #
       def default_timeout(spec_timeout = nil)
-        default_options[:spec_timeout] = spec_timeout || default_options[:spec_timeout]
+        if spec_timeout
+          default_options[:spec_timeout] = spec_timeout
+        else
+          default_options[:spec_timeout] || self.superclass.default_timeout || 2.71
+        end
       end
 
       # Sets/retrieves default AMQP.start options for this example group
       # and its nested groups.
       #
       def default_options(opts = nil)
-        metadata[:em_defaults] ||= {}
-        metadata[:em_defaults][self] ||= (superclass.default_options.dup rescue {})
-        metadata[:em_defaults][self] = opts || metadata[:em_defaults][self]
+        evented_spec_metadata[:default_options] ||= {}
+        if opts
+          evented_spec_metadata[:default_options].merge!(opts)
+        else
+          evented_spec_metadata[:default_options]
+        end
       end
 
       # Add before hook that will run inside EM event loop
@@ -92,14 +100,12 @@ module EventedSpec
 
       # Collection of evented hooks for THIS example group
       def em_hooks
-        metadata[:em_hooks] ||= {}
-        metadata[:em_hooks][self] ||=
-            {
-              :em_before   => (superclass.em_hooks[:em_before].clone rescue []),
-              :em_after    => (superclass.em_hooks[:em_after].clone rescue []),
-              :amqp_before => (superclass.em_hooks[:amqp_before].clone rescue []),
-              :amqp_after  => (superclass.em_hooks[:amqp_after].clone rescue [])
-            }
+        evented_spec_metadata[:em_hooks] ||= {
+          :em_before   => [],
+          :em_after    => [],
+          :amqp_before => [],
+          :amqp_after  => []
+        }
       end
     end
 
@@ -107,12 +113,6 @@ module EventedSpec
       unless example_group.respond_to? :default_timeout
         example_group.extend GroupMethods
       end
-    end
-
-    # Retrieves metadata passed in from enclosing example groups
-    #
-    def metadata
-      @em_metadata ||= self.class.metadata.dup rescue {}
     end
 
     # Retrieves default options passed in from enclosing example groups
