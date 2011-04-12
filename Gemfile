@@ -1,4 +1,14 @@
-source :gemcutter
+source :rubygems
+
+# Use local clones if possible.
+def custom_gem(name, options = Hash.new)
+  local_path = File.expand_path("../../#{name}", __FILE__)
+  if File.directory?(local_path)
+    gem name, options.merge(:path => local_path).delete_if { |key, _| [:git, :branch].include?(key) }
+  else
+    gem name, options
+  end
+end
 
 group :test do
   # Should work for either RSpec1 or Rspec2, but you cannot have both at once.
@@ -13,5 +23,8 @@ group :test do
     gem 'rspec', '>=2.0.0'
   end
 
-  gem 'amqp', '~>0.6.7'
+  gem "cool.io"
+  custom_gem "amq-client", :git => "git://github.com/ruby-amqp/amqp.git"
+  custom_gem "amq-protocol", :git => "git://github.com/ruby-amqp/amqp.git"
+  custom_gem "amqp", :git => "git://github.com/ruby-amqp/amqp.git", :branch => "master"
 end
