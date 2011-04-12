@@ -23,6 +23,7 @@ group :test do
     gem 'rspec', '~> 2.5.0'
   end
 
+  gem "RedCloth", "~> 4.2.7"
   gem "cool.io"
   custom_gem "amq-client", :git => "git://github.com/ruby-amqp/amqp.git"
   custom_gem "amq-protocol", :git => "git://github.com/ruby-amqp/amqp.git"
