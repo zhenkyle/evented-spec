@@ -20,11 +20,13 @@ Gem::Specification.new do |gem|
 
   # RDoc setup
   gem.has_rdoc = true
-  gem.rdoc_options.concat %W{--charset UTF-8 --main README.rdoc --title amqp-spec}
-  gem.extra_rdoc_files = ["LICENSE", "HISTORY", "README.rdoc"]
+  gem.rdoc_options.concat %W{--charset UTF-8 --main README.textile --title evented-spec}
+  gem.extra_rdoc_files = ["LICENSE", "HISTORY", "README.textile"]
 
   # Dependencies
   gem.add_development_dependency("rspec", ["~> 2.5.0"])
   gem.add_development_dependency("amqp", ["= 0.8.0.pre"])
-  gem.add_dependency("bundler", [">= 1.0.0"])
+  gem.add_development_dependency("bundler", [">= 1.0.0"])
+  gem.add_dependency("RedCloth", ["~> 4.2.7"])
+
 end
