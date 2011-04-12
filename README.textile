@@ -77,7 +77,9 @@ You can also pass some default options to specs (like amqp settings), they're sp
     include EventedSpec::SpecHelper
     default_timeout 0.5
     it "should prevent specs from hanging up" do
-      1.should == 1 # this spec is going to fail with timeout error because #done is not called
+      em do
+        1.should == 1 # this spec is going to fail with timeout error because #done is not called
+      end
     end
   end
 </code></pre>
