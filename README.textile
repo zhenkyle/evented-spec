@@ -2,25 +2,13 @@ h2. About evented-spec
 
 Evented-spec is a set of helpers to help you test your asynchronous code.
 
-EventMachine/Cool.io-based code, including asynchronous "AMQP library":https://github.com/ruby-amqp/ruby-amqp
-is notoriously difficult to test. To the point that many people recommend using either
-"mocks":https://github.com/danielsdeleo/moqueue or "synchronous libraries":https://github.com/ruby-amqp/bunny
-instead of EM-based libraries in unit tests. This is not always an option, however --
-sometimes your code just has to run inside the event loop, and you want to test a real
-thing, not just mocks.
+EventMachine/Cool.io-based code, including asynchronous "AMQP library":https://github.com/ruby-amqp/ruby-amqp is notoriously difficult to test. To the point that many people recommend using either "mocks":https://github.com/danielsdeleo/moqueue or "synchronous libraries":https://github.com/ruby-amqp/bunny instead of EM-based libraries in unit tests. This is not always an option, however -- sometimes your code just has to run inside the event loop, and you want to test a real thing, not just mocks.
 
-"em-spec":https://github.com/tmm1/em-spec gem made it easier to write evented specs, but it
-has several drawbacks. First, it is not easy to manage both EM.run and AMQP.start loops
-at the same time. Second, AMQP is not properly stopped and deactivated upon exceptions and
-timeouts, resulting in state leak between examples and multiple mystereous failures.
-
-amqp-spec, and, subsequently, evented-spec add more helpers to keep your specs from
-being bloated.
+"em-spec":https://github.com/tmm1/em-spec gem made it easier to write evented specs, but it has several drawbacks. First, it is not easy to manage both EM.run and AMQP.start loops at the same time. Second, AMQP is not properly stopped and deactivated upon exceptions and timeouts, resulting in state leak between examples and multiple mystereous failures. amqp-spec, and, subsequently, evented-spec add more helpers to keep your specs from being bloated.
 
 h2. Usage
 
-To get started with evented-spec you need to include one of the helper modules
-in your example groups, e.g.:
+To get started with evented-spec you need to include one of the helper modules in your example groups, e.g.:
 
 <pre><code>
   describe "eventmachine-based client" do
@@ -48,20 +36,15 @@ Particular modules and methods are explained below.
 
 h3. #done
 
-We have no means to know when your work with reactor is finished, so whatever it is
-you need to call @done@ at some point. It optionally accepts a timeout and a block
-that is executed right before event reactor loop is stopped. If you don't call #done,
-your specs are going to fail by timeout.
+We have no means to know when your work with reactor is finished, so whatever it is you need to call @done@ at some point. It optionally accepts a timeout and a block that is executed right before event reactor loop is stopped. If you don't call #done, your specs are going to fail by timeout.
 
 h3. EventedSpec::SpecHelper
 
-@EventedSpec::SpecHelper@ is for semi-manual managing of reactor life-cycle. It
-includes three helpers: for EventMachine, Coolio and AMQP.
+@EventedSpec::SpecHelper@ is for semi-manual managing of reactor life-cycle. It includes three helpers: for EventMachine, Coolio and AMQP.
 
 @em@ stands for EventMachine. It takes a block, which is run after reactor starts.
 
-@amqp@ stands for AMQP. It takes a block, which is run after amqp connects with
-broker using given or default options.
+@amqp@ stands for AMQP. It takes a block, which is run after amqp connects with broker using given or default options.
 
 @coolio@ stands for cool.io. It takes a block, which is run after reactor starts.
 
@@ -69,11 +52,9 @@ All three accept a hash of options. Look into method documentation to learn more
 
 h3. EventedSpec::EMSpec, EventedSpec::AMQPSpec
 
-@EventedSpec::EMSpec@ wraps every example in em block, so it might save you a couple
-of lines per example. @EventedSpec::AMQPSpec@ wraps every example in amqp block.
+@EventedSpec::EMSpec@ wraps every example in em block, so it might save you a couple of lines per example. @EventedSpec::AMQPSpec@ wraps every example in amqp block.
 
-Also note that every example group including @EMSpec@ or @AMQPSpec@ automatically
-includes @SpecHelper@.
+Also note that every example group including @EMSpec@ or @AMQPSpec@ automatically includes @SpecHelper@.
 
 Example:
 <pre><code>
@@ -88,8 +69,7 @@ Example:
 
 h3. default_options, default_timeout
 
-You can also pass some default options to specs (like amqp settings), they're
-specific to domain you're using evented-spec in.
+You can also pass some default options to specs (like amqp settings), they're specific to domain you're using evented-spec in.
 
 @default_timeout@ sets time (in seconds) for specs to time out
 <pre><code>
@@ -143,9 +123,7 @@ So, the order of hooks is as follows: @before(:all)@, @before(:each)@,
 
 h2. AMQP gem compatibility
 
-AMQP spec helpers are for newer version of AMQP gem, 0.8. If you need spec-helpers
-for AMQP gem 0.7, take a look at "amqp-spec":https://github.com/ruby-amqp/amqp-spec,
-API is mostly the same.
+AMQP spec helpers are for newer version of AMQP gem, 0.8. If you need spec-helpers for AMQP gem 0.7, take a look at "amqp-spec":https://github.com/ruby-amqp/amqp-spec, API is mostly the same.
 
 h2. See also
 
