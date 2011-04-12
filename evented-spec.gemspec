@@ -5,9 +5,9 @@ Gem::Specification.new do |gem|
   gem.version     = File.open('VERSION').read.strip
   gem.summary     = %q{Simple API for writing asynchronous EventMachine/AMQP specs. Supports RSpec and RSpec2.}
   gem.description = %q{Simple API for writing asynchronous EventMachine and AMQP specs. Runs legacy EM-Spec based examples. Supports RSpec and RSpec2.}
-  gem.authors     = ["Arvicco"]
+  gem.authors     = ["Arvicco", "Markiz"]
   gem.email       = "arvitallian@gmail.com"
-  gem.homepage    = %q{http://github.com/markiz/evented-spec}
+  gem.homepage    = %q{http://github.com/ruby-amqp/evented-spec}
   gem.platform    = Gem::Platform::RUBY
   gem.date        = Time.now.strftime "%Y-%m-%d"
 
@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.extra_rdoc_files = ["LICENSE", "HISTORY", "README.rdoc"]
 
   # Dependencies
-  gem.add_development_dependency(%q{rspec}, [">= 1.2.9"])
-  gem.add_development_dependency("amqp", ["~> 0.6.7"])
+  gem.add_development_dependency("rspec", ["~> 2.5.0"])
+  gem.add_development_dependency("amqp", ["= 0.8.0.pre"])
   gem.add_dependency("bundler", [">= 1.0.0"])
 end
