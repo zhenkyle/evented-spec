@@ -36,7 +36,7 @@ Particular modules and methods are explained below.
 
 h3. #done
 
-We have no means to know when your work with reactor is finished, so whatever it is you need to call @done@ at some point. It optionally accepts a timeout and a block that is executed right before event reactor loop is stopped. If you don't call #done, your specs are going to fail by timeout.
+We have no means to know when your work with reactor is finished, so whatever it is you need to call @done@ at some point. It optionally accepts a timeout and a block that is executed right before event reactor loop is stopped. If you don't call @done@, your specs are going to fail by timeout.
 
 h3. EventedSpec::SpecHelper
 
@@ -77,8 +77,7 @@ You can also pass some default options to specs (like amqp settings), they're sp
     include EventedSpec::SpecHelper
     default_timeout 0.5
     it "should prevent specs from hanging up" do
-      # this spec is going to fail with timeout error because #done is not
-      # called
+      1.should == 1 # this spec is going to fail with timeout error because #done is not called
     end
   end
 </code></pre>
