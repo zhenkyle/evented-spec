@@ -2,7 +2,7 @@ require 'spec_helper'
 
 def publish_and_consume_once(queue_name="test_sink", data="data")
   amqp(:spec_timeout => 0.5) do
-    AMQP::Channel.new do |channel|
+    AMQP::Channel.new do |channel, _|
       exchange = channel.direct(queue_name)
       queue = channel.queue(queue_name).bind(exchange)
       queue.subscribe do |hdr, msg|
@@ -11,9 +11,7 @@ def publish_and_consume_once(queue_name="test_sink", data="data")
         done { queue.unsubscribe; queue.delete }
       end
       EM.add_timer(0.2) do
-        AMQP::Channel.new do |other_channel|
-          exchange.publish data
-        end
+        exchange.publish data
       end
     end
   end
