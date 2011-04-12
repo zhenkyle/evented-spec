@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Example Groups", ".evented_spec_metadata" do
   context "when EventedSpec::SpecHelper is included" do
     include EventedSpec::SpecHelper
-    it "should assign empty hash by default" do
+    it "should assign some hash by default" do
       self.class.evented_spec_metadata.should == {}
     end
 

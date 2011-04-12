@@ -2,9 +2,12 @@ module EventedSpec
   module SpecHelper
     # Represents example running inside some type of event loop
     class EventedExample
+      DEFAULT_OPTIONS = {
+        :spec_timeout => 1
+      }
       # Create new evented example
       def initialize(opts, example_group_instance, &block)
-        @opts, @example_group_instance, @block = opts, example_group_instance, block
+        @opts, @example_group_instance, @block = DEFAULT_OPTIONS.merge(opts), example_group_instance, block
       end
 
       # Called from #run_event_loop when event loop is stopped,

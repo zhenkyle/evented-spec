@@ -58,7 +58,7 @@ module EventedSpec
         if spec_timeout
           default_options[:spec_timeout] = spec_timeout
         else
-          default_options[:spec_timeout] || self.superclass.default_timeout || 2.71
+          default_options[:spec_timeout] || self.superclass.default_timeout
         end
       end
 

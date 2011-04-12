@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Following 8 examples should all be failing:' do
+describe 'Following 9 examples should all be failing:' do
   describe EventMachine, " when running failing examples" do
     include EventedSpec::EMSpec
 
@@ -51,6 +51,13 @@ describe 'Following 8 examples should all be failing:' do
     end
 
     it 'should fail due to default timeout, not hang up' do
+    end
+  end
+
+  describe AMQP, "when default timeout is not set" do
+    include EventedSpec::AMQPSpec
+    it "should fail by timeout anyway" do
+      1.should == 1
     end
   end
 end
