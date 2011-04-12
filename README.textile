@@ -127,6 +127,39 @@ h2. AMQP gem compatibility
 
 AMQP spec helpers are for newer version of AMQP gem, 0.8. If you need spec-helpers for AMQP gem 0.7, take a look at "amqp-spec":https://github.com/ruby-amqp/amqp-spec, API is mostly the same.
 
+h2. Words of warning on blocking the reactor
+
+Evented specs are currently run inside of reactor thread. What this effectively means is that you *should not block* during spec execution.
+
+For example, the following *will not* work:
+<pre><code>
+describe "using amqp" do
+  include EventedSpec::AMQPSpec
+
+  it "should do something useful" do
+    channel = AMQP::Channel.new
+    sleep 0.2                     # voila, you're blocking the reactor
+    channel.should be_open        # no, it should not
+    done
+  end
+end
+</code></pre>
+
+What you *should* do instead is use callbacks:
+<pre><code>
+describe "using amqp" do
+  include EventedSpec::AMQPSpec
+
+  it "should do something useful" do
+    AMQP::Channel.new do |channel, _|
+      channel.should be_open
+      done
+    end
+  end
+end
+</code></pre>
+
+
 h2. See also
 
 You can see evented-spec in use in spec suites for our amqp gems, "amq-client":https://github.com/ruby-amqp/amq-client/tree/master/spec and "amqp":https://github.com/ruby-amqp/amqp/tree/master/spec.
