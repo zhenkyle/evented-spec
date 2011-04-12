@@ -2,6 +2,12 @@ module EventedSpec
   module Util
     extend self
 
+    # Creates a deep clone of an object. Different from normal Object#clone
+    # method which is shallow clone (doesn't traverse hashes and arrays,
+    # cloning their contents).
+    #
+    # @param Object to clone
+    # @return Deep clone of the given object
     def deep_clone(value)
       case value
       when Hash
