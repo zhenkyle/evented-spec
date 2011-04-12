@@ -20,7 +20,7 @@ group :test do
     gem 'win32console'
     gem 'rspec', '~>1.3.0', :require => 'spec'
   else
-    gem 'rspec', '>=2.0.0'
+    gem 'rspec', '~> 2.5.0'
   end
 
   gem "cool.io"
