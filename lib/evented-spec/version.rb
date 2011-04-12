@@ -1,10 +1,8 @@
 require 'pathname'
 
 module EventedSpec
-  module Spec
-
-    VERSION_FILE = Pathname.new(__FILE__).dirname + '/../../VERSION' # :nodoc:
-    VERSION = VERSION_FILE.exist? ? VERSION_FILE.read.strip : nil
-
-  end
+  # Path to version file
+  VERSION_FILE = Pathname.new(__FILE__).dirname + '/../../VERSION'
+  # Gem version
+  VERSION = VERSION_FILE.exist? ? VERSION_FILE.read.strip : nil
 end

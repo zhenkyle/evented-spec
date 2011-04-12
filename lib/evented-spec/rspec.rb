@@ -30,10 +30,11 @@ module EventedSpec
   # EventedSpec::SpecHelper module defines #ampq and #em methods that can be safely used inside
   # your specs (examples) to test code running inside AMQP.start or EM.run loop
   # respectively. Each example is running in a separate event loop, you can control
-  # for timeouts either with :spec_timeout option given to #amqp/#em method or setting
+  # for timeouts either with :spec_timeout option given to #amqp/#em/#coolio method or setting
   # a default timeout using default_timeout(timeout) macro inside describe/context block.
   module SpecHelper
-
+    # Error which shows in RSpec log when example does not call #done inside
+    # of event loop.
     SpecTimeoutExceededError = Class.new(RuntimeError)
 
     # Class methods (macros) for any example groups that includes SpecHelper.
@@ -83,7 +84,7 @@ module EventedSpec
       # Adds before hook that will run inside EM event loop before example starts.
       #
       # @param [Symbol] scope for hook (only :each is supported currently)
-      # @yield [] hook block
+      # @yield hook block
       def em_before(scope = :each, &block)
         raise ArgumentError, "em_before only supports :each scope" unless :each == scope
         em_hooks[:em_before] << block
@@ -92,7 +93,7 @@ module EventedSpec
       # Adds after hook that will run inside EM event loop after example finishes.
       #
       # @param [Symbol] scope for hook (only :each is supported currently)
-      # @yield [] hook block
+      # @yield hook block
       def em_after(scope = :each, &block)
         raise ArgumentError, "em_after only supports :each scope" unless :each == scope
         em_hooks[:em_after].unshift block
@@ -102,7 +103,7 @@ module EventedSpec
       # before example starts
       #
       # @param [Symbol] scope for hook (only :each is supported currently)
-      # @yield [] hook block
+      # @yield hook block
       def amqp_before(scope = :each, &block)
         raise ArgumentError, "amqp_before only supports :each scope" unless :each == scope
         em_hooks[:amqp_before] << block
@@ -112,7 +113,7 @@ module EventedSpec
       # after example finishes
       #
       # @param [Symbol] scope for hook (only :each is supported currently)
-      # @yield [] hook block
+      # @yield hook block
       def amqp_after(scope = :each, &block)
         raise ArgumentError, "amqp_after only supports :each scope" unless :each == scope
         em_hooks[:amqp_after].unshift block
@@ -131,7 +132,7 @@ module EventedSpec
       end
     end
 
-    def self.included(example_group) # :nodoc:
+    def self.included(example_group)
       unless example_group.respond_to? :default_timeout
         example_group.extend GroupMethods
       end
@@ -153,7 +154,7 @@ module EventedSpec
     # @option opts [Numeric] :timeout (nil) *Connection* timeout, measured in seconds.
     # @option opts [Boolean] :logging (false) Toggle the extremely verbose AMQP logging.
     # @option opts [Numeric] :spec_timeout (nil) Amount of time before spec is stopped by timeout
-    # @yield [] block to execute after amqp connects
+    # @yield block to execute after amqp connects
     def amqp(opts = {}, &block)
       opts = default_options.merge opts
       @evented_example = AMQPExample.new(opts, self, &block)
@@ -169,7 +170,7 @@ module EventedSpec
     #
     # @param [Hash] options for eventmachine
     # @param opts [Numeric] :spec_timeout (nil) Amount of time before spec is stopped by timeout
-    # @yield [] block to execute after eventmachine loop starts
+    # @yield block to execute after eventmachine loop starts
     def em(opts = {}, &block)
       opts = default_options.merge(opts.is_a?(Hash) ? opts : { :spec_timeout =>  opts })
       @evented_example = EMExample.new(opts, self, &block)
@@ -182,7 +183,7 @@ module EventedSpec
     #
     # @param [Hash] options for cool.io
     # @param opts [Numeric] :spec_timeout (nil) Amount of time before spec is stopped by timeout
-    # @yield [] block to execute after cool.io loop starts
+    # @yield block to execute after cool.io loop starts
     def coolio(opts = {}, &block)
       opts = default_options.merge opts
       @evented_example = CoolioExample.new(opts, self, &block)
@@ -220,13 +221,14 @@ module EventedSpec
   # examples.
   #
   module AMQPSpec
-    def self.included(example_group) # :nodoc:
+    def self.included(example_group)
       example_group.send(:include, SpecHelper)
       example_group.extend(ClassMethods)
     end
 
+    # @private
     module ClassMethods
-      def it(*args, &block) # :nodoc:
+      def it(*args, &block)
         if block
           new_block = Proc.new {|example_group_instance| (example_group_instance || self).instance_eval { amqp(&block) } }
           super(*args, &new_block)
@@ -242,13 +244,14 @@ module EventedSpec
   # will run inside EM.run loop without the need to explicitly call 'em'.
   #
   module EMSpec
-    def self.included(example_group) # :nodoc:
+    def self.included(example_group)
       example_group.send(:include, SpecHelper)
       example_group.extend ClassMethods
     end
 
+    # @private
     module ClassMethods
-      def it(*args, &block) # :nodoc:
+      def it(*args, &block)
         if block
           # Shared example groups seem to pass example group instance
           # to the actual example block

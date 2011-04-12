@@ -1,8 +1,10 @@
 module EventedSpec
   module SpecHelper
     # Represents spec running inside AMQP.start loop
+    # See {EventedExample} for details and method descriptions.
     class AMQPExample < EMExample
-      # Run @block inside the AMQP.start loop
+      # Run @block inside the AMQP.start loop.
+      # See {EventedExample#run}
       def run
         run_em_loop do
           AMQP.start_connection(@opts) do
@@ -15,6 +17,7 @@ module EventedSpec
       # Breaks the event loop and finishes the spec. It yields to any given block first,
       # then stops AMQP, EM event loop and cleans up AMQP state.
       #
+      # See {EventedExample#done}
       def done(delay = nil)
         delayed(delay) do
           yield if block_given?
@@ -38,6 +41,8 @@ module EventedSpec
 
       # Called from run_event_loop when event loop is finished, before any exceptions
       # is raised or example returns. We ensure AMQP state cleanup here.
+      #
+      # See {EventedExample#run}
       def finish_example
         AMQP.cleanup_state
         super

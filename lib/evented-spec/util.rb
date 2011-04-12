@@ -1,4 +1,5 @@
 module EventedSpec
+  # Miscellanous utility methods used throughout the code.
   module Util
     extend self
 

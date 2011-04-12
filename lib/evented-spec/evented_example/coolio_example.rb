@@ -2,13 +2,14 @@
 # Cool.io loop is a little bit trickier to test, since it
 # doesn't go into a loop if there are no watchers.
 #
-# Basically, all we do is add timeout and run some callbacks
+# Basically, all we do is add a timeout watcher and run some callbacks
 #
-
-
 module EventedSpec
   module SpecHelper
+    # Evented example which is run inside of cool.io loop.
+    # See {EventedExample} details and method descriptions.
     class CoolioExample < EventedExample
+      # see {EventedExample#run}
       def run
         reset
         delayed(0) do
@@ -19,10 +20,11 @@ module EventedSpec
             done
           end
         end
-        timeout(@opts[:spec_timeout])
+        timeout(@opts[:spec_timeout]) if @opts[:spec_timeout]
         Coolio::DSL.run
       end
 
+      # see {EventedExample#timeout}
       def timeout(time = 1)
         @spec_timer = delayed(time) do
           @spec_exception ||= SpecTimeoutExceededError.new("timed out")
@@ -30,6 +32,7 @@ module EventedSpec
         end
       end
 
+      # see {EventedExample#done}
       def done(delay = nil, &block)
         @spec_timer.detach
         delayed(delay) do
@@ -38,11 +41,13 @@ module EventedSpec
         end
       end
 
+      # Stops the loop and finalizes the example
       def finish_loop
         default_loop.stop
         finish_example
       end
 
+      # see {EventedExample#delayed}
       def delayed(delay = nil, &block)
         timer = Coolio::TimerWatcher.new(delay.to_f, false)
         instance = self
@@ -64,8 +69,9 @@ module EventedSpec
       # If you get an exception inside of Cool.io event loop, you probably can't
       # do anything with it anytime later. You'll keep getting C-extension exceptions
       # when trying to start up. Replacing the Coolio default event loop with a new
-      # one is relatively harmless
+      # one is relatively harmless.
       #
+      # @private
       def reset
         Coolio::Loop.default_loop = Coolio::Loop.new
       end
@@ -73,8 +79,13 @@ module EventedSpec
   end # module SpecHelper
 end # module EventedSpec
 
+# Cool.io provides no means to change the default loop which makes sense in
+# most situations, but not ours.
+#
+# @private
 module Coolio
   class Loop
+    # Sets cool.io default loop.
     def self.default_loop=(event_loop)
       if RUBY_VERSION >= "1.9.0"
         Thread.current.instance_variable_set :@_coolio_loop, event_loop

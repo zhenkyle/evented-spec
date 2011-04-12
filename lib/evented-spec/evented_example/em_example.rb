@@ -1,9 +1,9 @@
 module EventedSpec
   module SpecHelper
-    # Represents spec running inside EM.run loop
+    # Represents spec running inside EM.run loop.
+    # See {EventedExample} for details and method descriptions.
     class EMExample < EventedExample
       # Runs hooks of specified type (hopefully, inside the event loop)
-      #
       def run_em_hooks(type)
         @example_group_instance.class.em_hooks[type].each do |hook|
           @example_group_instance.instance_eval(&hook) #_with_rescue(&hook)
@@ -45,7 +45,7 @@ module EventedSpec
         EM.stop_event_loop if EM.reactor_running?
       end
 
-
+      # See {EventedExample#timeout}
       def timeout(spec_timeout)
         EM.cancel_timer(@spec_timer) if @spec_timer
         @spec_timer = EM.add_timer(spec_timeout) do
@@ -54,7 +54,7 @@ module EventedSpec
         end
       end
 
-      # Run @block inside the EM.run event loop
+      # see {EventedExample#run}
       def run
         run_em_loop do
           @example_group_instance.instance_eval(&@block)
@@ -64,6 +64,7 @@ module EventedSpec
       # Breaks the EM event loop and finishes the spec.
       # Done yields to any given block first, then stops EM event loop.
       #
+      # See {EventedExample#done}
       def done(delay = nil)
         delayed(delay) do
           yield if block_given?
@@ -73,6 +74,7 @@ module EventedSpec
         end
       end # done
 
+      # See {EventedExample#delayed}
       def delayed(delay, &block)
         if delay
           EM.add_timer delay, &block
