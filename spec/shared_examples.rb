@@ -1,7 +1,7 @@
 shared_examples_for 'SpecHelper examples' do
   after do
     EM.reactor_running?.should == false
-    AMQP.conn.should be_nil
+    AMQP.connection.should be_nil
   end
 
   it "should not require a call to done when #em/#amqp is not used" do
@@ -34,28 +34,28 @@ shared_examples_for 'SpecHelper examples' do
 
   it "should run AMQP.start loop with options given to #amqp" do
     amqp(:vhost => '/', :user => 'guest') do
-      AMQP.conn.should be_connected
+      AMQP.connection.should be_connected
       done
     end
   end
 
   it "should properly close AMQP connection if block completes normally" do
     amqp do
-      AMQP.conn.should be_connected
+      AMQP.connection.should be_connected
       done
     end
-    AMQP.conn.should be_nil
+    AMQP.connection.should be_nil
   end
 
   # TODO: remove dependency on (possibly long) DNS lookup
   it "should gracefully exit if no AMQP connection was made" do
     expect {
       amqp(:host => '192.168.0.256') do
-        AMQP.conn.should be_nil
+        AMQP.connection.should be_nil
         done
       end
     }.to raise_error EventMachine::ConnectionError
-    AMQP.conn.should be_nil
+    AMQP.connection.should be_nil
   end
 
   it_should_behave_like 'done examples'
@@ -130,7 +130,7 @@ shared_examples_for 'timeout examples' do
   end
 
   specify "AMQP connection should not leak between examples" do
-    AMQP.conn.should be_nil
+    AMQP.connection.should be_nil
   end
 
   context 'embedded context can set up separate defaults' do

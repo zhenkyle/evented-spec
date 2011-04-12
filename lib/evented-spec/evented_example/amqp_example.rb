@@ -20,7 +20,7 @@ module EventedSpec
           yield if block_given?
           EM.next_tick do
             run_em_hooks :amqp_after
-            if AMQP.conn && !AMQP.closing?
+            if AMQP.connection && !AMQP.closing?
               AMQP.stop_connection do
                 # Cannot call finish_em_loop before connection is marked as closed
                 # This callback is called before that happens.

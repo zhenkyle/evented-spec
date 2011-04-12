@@ -11,10 +11,10 @@ module HookHelper
       EM.reactor_running?.should be_false
     end
     if :amqp_connected == connection
-      AMQP.conn.should be_connected
+      AMQP.connection.should be_connected
     else
-      if AMQP.conn
-        AMQP.conn.connected?.should be_false
+      if AMQP.connection
+        AMQP.connection.connected?.should be_false
       end
     end
   end

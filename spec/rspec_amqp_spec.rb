@@ -48,7 +48,7 @@ describe 'Evented AMQP specs' do
     context 'inside embedded context / example group' do
       it 'should inherit default_options/metadata from enclosing example group' do
         # This is a guard against regression on dev box without notice
-        AMQP.conn.instance_variable_get(:@settings)[:host].should == AMQP_OPTS[:host]
+        AMQP.connection.instance_variable_get(:@settings)[:host].should == AMQP_OPTS[:host]
         self.class.default_options[:host].should == AMQP_OPTS[:host]
         self.class.default_timeout.should == 1
         done
@@ -69,7 +69,7 @@ describe 'Evented AMQP specs' do
           :this.should == :fail
         end
       }.to raise_error RSPEC::Expectations::ExpectationNotMetError
-      AMQP.conn.should == nil
+      AMQP.connection.should == nil
     end
 
     it "should NOT ignore failing expectations after 'done'" do
@@ -79,11 +79,11 @@ describe 'Evented AMQP specs' do
           :this.should == :fail
         end
       }.to raise_error RSPEC::Expectations::ExpectationNotMetError
-      AMQP.conn.should == nil
+      AMQP.connection.should == nil
     end
 
     it "should properly close AMQP connection after Rspec failures" do
-      AMQP.conn.should == nil
+      AMQP.connection.should == nil
     end
   end
 
