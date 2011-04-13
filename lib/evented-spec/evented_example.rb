@@ -55,7 +55,3 @@ module EventedSpec
     end # class EventedExample
   end # module SpecHelper
 end # module AMQP
-
-require 'evented-spec/evented_example/em_example'
-require 'evented-spec/evented_example/amqp_example'
-require 'evented-spec/evented_example/coolio_example'

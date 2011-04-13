@@ -1,3 +1,4 @@
+require 'evented-spec/ext/amqp'
 module EventedSpec
   module SpecHelper
     # Represents spec running inside AMQP.start loop
@@ -7,7 +8,7 @@ module EventedSpec
       # See {EventedExample#run}
       def run
         run_em_loop do
-          AMQP.start_connection(@opts) do
+          ::AMQP.start_connection(@opts) do
             run_em_hooks :amqp_before
             @example_group_instance.instance_eval(&@block)
           end
@@ -23,8 +24,8 @@ module EventedSpec
           yield if block_given?
           EM.next_tick do
             run_em_hooks :amqp_after
-            if AMQP.connection && !AMQP.closing?
-              AMQP.stop_connection do
+            if ::AMQP.connection && !::AMQP.closing?
+              ::AMQP.stop_connection do
                 # Cannot call finish_em_loop before connection is marked as closed
                 # This callback is called before that happens.
                 EM.next_tick { finish_em_loop }
@@ -32,7 +33,7 @@ module EventedSpec
             else
               # Need this branch because if AMQP couldn't connect,
               # the callback would never trigger
-              AMQP.cleanup_state
+              ::AMQP.cleanup_state
               EM.next_tick { finish_em_loop }
             end
           end
@@ -44,7 +45,7 @@ module EventedSpec
       #
       # See {EventedExample#run}
       def finish_example
-        AMQP.cleanup_state
+        ::AMQP.cleanup_state
         super
       end
     end # class AMQPExample < EventedExample

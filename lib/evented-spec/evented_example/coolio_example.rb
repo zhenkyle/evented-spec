@@ -1,3 +1,4 @@
+require 'evented-spec/ext/coolio'
 #
 # Cool.io loop is a little bit trickier to test, since it
 # doesn't go into a loop if there are no watchers.
