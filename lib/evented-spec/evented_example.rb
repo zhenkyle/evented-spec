@@ -7,7 +7,7 @@ module EventedSpec
     class EventedExample
       # Default options to use with the examples
       DEFAULT_OPTIONS = {
-        :spec_timeout => 1
+        :spec_timeout => 5
       }
 
       # Create new evented example
