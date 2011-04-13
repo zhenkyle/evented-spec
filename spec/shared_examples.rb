@@ -124,9 +124,9 @@ shared_examples_for 'timeout examples' do
   end
 
   specify "but timeout call inside amqp loop has even higher priority" do
-    expect { amqp(:spec_timeout => 0.5) { timeout(0.2) } }.
+    expect { amqp(:spec_timeout => 4.5) { timeout(0.2) } }.
         to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
-    (Time.now-@start).should be_within(0.1).of(0.2)
+    (Time.now-@start).should be_within(0.2).of(0.2)
   end
 
   specify "AMQP connection should not leak between examples" do
