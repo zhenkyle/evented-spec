@@ -28,5 +28,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency("amqp", ["= 0.8.0.pre"])
   gem.add_development_dependency("bundler", [">= 1.0.0"])
   gem.add_development_dependency("RedCloth", ["~> 4.2.7"])
-
+  gem.add_development_dependency("yard")
 end
