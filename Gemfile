@@ -10,6 +10,11 @@ def custom_gem(name, options = Hash.new)
   end
 end
 
+group :development do
+  gem "yard"
+  gem "RedCloth", "~> 4.2.7"
+end
+
 group :test do
   # Should work for either RSpec1 or Rspec2, but you cannot have both at once.
   # Also, keep in mind that if you install Rspec 2 it prevents Rspec 1 from running normally.
@@ -23,9 +28,8 @@ group :test do
     gem 'rspec', '~> 2.5.0'
   end
 
-  gem "RedCloth", "~> 4.2.7"
   gem "cool.io"
-  custom_gem "amq-client", :git => "git://github.com/ruby-amqp/amqp.git"
-  custom_gem "amq-protocol", :git => "git://github.com/ruby-amqp/amqp.git"
-  custom_gem "amqp", :git => "git://github.com/ruby-amqp/amqp.git", :branch => "master"
+  custom_gem "amq-client",   :git => "git://github.com/ruby-amqp/amq-client.git"
+  custom_gem "amq-protocol", :git => "git://github.com/ruby-amqp/amq-protocol.git"
+  custom_gem "amqp",         :git => "git://github.com/ruby-amqp/amqp.git", :branch => "master"
 end
