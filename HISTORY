@@ -93,3 +93,5 @@
 == 0.4.0 / 2011-03-13
 
 * Forked into evented-spec.
+* cool.io support
+* Using amqp 0.8.* API instead of 0.7.*
