@@ -78,20 +78,3 @@ module EventedSpec
     end # class CoolioExample
   end # module SpecHelper
 end # module EventedSpec
-
-# Cool.io provides no means to change the default loop which makes sense in
-# most situations, but not ours.
-#
-# @private
-module Coolio
-  class Loop
-    # Sets cool.io default loop.
-    def self.default_loop=(event_loop)
-      if RUBY_VERSION >= "1.9.0"
-        Thread.current.instance_variable_set :@_coolio_loop, event_loop
-      else
-        @@_coolio_loop = event_loop
-      end
-    end
-  end
-end

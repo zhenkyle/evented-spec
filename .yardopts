@@ -1,4 +1,6 @@
 --no-private
 --markup textile
+--exclude lib/evented-spec/ext
+lib/**/*.rb
 -
 LICENSE

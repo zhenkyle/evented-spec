@@ -1,7 +1,3 @@
-require 'evented-spec/amqp'
-require 'evented-spec/evented_example'
-require 'evented-spec/util'
-
 # You can include one of the following modules into your example groups:
 # EventedSpec::SpecHelper,
 # EventedSpec::AMQPSpec,
