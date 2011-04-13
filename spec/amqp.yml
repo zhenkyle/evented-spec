@@ -1,0 +1,5 @@
+test:
+  user: guest
+  pass: guest
+  host: localhost
+  vhost: /
