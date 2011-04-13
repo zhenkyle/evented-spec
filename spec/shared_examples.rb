@@ -120,7 +120,7 @@ shared_examples_for 'timeout examples' do
   specify "spec timeout given in amqp options has higher priority than default" do
     expect { amqp(:spec_timeout => 0.2) {} }.
         to raise_error EventedSpec::SpecHelper::SpecTimeoutExceededError
-    (Time.now-@start).should be_within(0.1).of(0.2)
+    (Time.now-@start).should be_within(0.3).of(0.2)
   end
 
   specify "but timeout call inside amqp loop has even higher priority" do
