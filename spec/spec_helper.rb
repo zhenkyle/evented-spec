@@ -26,7 +26,7 @@ amqp_config = File.dirname(__FILE__) + '/amqp.yml'
 AMQP_OPTS   = unless File.exists? amqp_config
                 {:user  => 'guest',
                  :pass  => 'guest',
-                 :host  => '10.211.55.2',
+                 :host  => 'localhost',
                  :vhost => '/'}
               else
                 class Hash
