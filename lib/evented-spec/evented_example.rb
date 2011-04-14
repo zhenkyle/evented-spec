@@ -15,6 +15,16 @@ module EventedSpec
         @opts, @example_group_instance, @block = DEFAULT_OPTIONS.merge(opts), example_group_instance, block
       end
 
+      # Runs hooks of specified type (hopefully, inside event loop)
+      #
+      # @param hook type
+      def run_hooks(type)
+        @example_group_instance.class.evented_spec_hooks_for(type).each do |hook|
+          @example_group_instance.instance_eval(&hook)
+        end
+      end
+
+
       # Called from #run_event_loop when event loop is stopped,
       # but before the example returns.
       # Descendant classes may redefine to clean up type-specific state.

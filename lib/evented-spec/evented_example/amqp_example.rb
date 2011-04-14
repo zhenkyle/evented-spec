@@ -9,7 +9,7 @@ module EventedSpec
       def run
         run_em_loop do
           ::AMQP.start_connection(@opts) do
-            run_em_hooks :amqp_before
+            run_hooks :amqp_before
             @example_group_instance.instance_eval(&@block)
           end
         end
@@ -23,7 +23,7 @@ module EventedSpec
         delayed(delay) do
           yield if block_given?
           EM.next_tick do
-            run_em_hooks :amqp_after
+            run_hooks :amqp_after
             if ::AMQP.connection && !::AMQP.closing?
               ::AMQP.stop_connection do
                 # Cannot call finish_em_loop before connection is marked as closed

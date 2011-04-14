@@ -3,13 +3,6 @@ module EventedSpec
     # Represents spec running inside EM.run loop.
     # See {EventedExample} for details and method descriptions.
     class EMExample < EventedExample
-      # Runs hooks of specified type (hopefully, inside the event loop)
-      def run_em_hooks(type)
-        @example_group_instance.class.em_hooks[type].each do |hook|
-          @example_group_instance.instance_eval(&hook) #_with_rescue(&hook)
-        end
-      end
-
       # Runs given block inside EM event loop.
       # Double-round exception handler needed because some of the exceptions bubble
       # outside of event loop due to asynchronous nature of evented examples
@@ -17,7 +10,7 @@ module EventedSpec
       def run_em_loop
         begin
           EM.run do
-            run_em_hooks :em_before
+            run_hooks :em_before
 
             @spec_exception = nil
             timeout(@opts[:spec_timeout]) if @opts[:spec_timeout]
@@ -32,7 +25,7 @@ module EventedSpec
         rescue Exception => e
           @spec_exception ||= e
           # p "Outside loop, caught #{@spec_exception.class.name}: #{@spec_exception}"
-          run_em_hooks :em_after # Event loop broken, but we still need to run em_after hooks
+          run_hooks :em_after # Event loop broken, but we still need to run em_after hooks
         ensure
           finish_example
         end
@@ -41,7 +34,7 @@ module EventedSpec
       # Stops EM event loop. It is called from #done
       #
       def finish_em_loop
-        run_em_hooks :em_after
+        run_hooks :em_after
         EM.stop_event_loop if EM.reactor_running?
       end
 

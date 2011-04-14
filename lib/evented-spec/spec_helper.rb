@@ -80,14 +80,17 @@ module EventedSpec
       # Collection of evented hooks for current example group
       #
       # @return [Hash] hash with hooks
-      def em_hooks
-        evented_spec_metadata[:em_hooks] ||= {
-          :em_before   => [],
-          :em_after    => [],
-          :amqp_before => [],
-          :amqp_after  => []
-        }
+      def evented_spec_hooks
+        evented_spec_metadata[:es_hooks] ||= Hash.new
       end
+
+      # Collection of evented hooks of predefined type for current example group
+      #
+      # @param [Symbol] hook type
+      # @return [Array] hooks
+      def evented_spec_hooks_for(type)
+        evented_spec_hooks[type] ||= []
+      end # evented_spec_hooks_for
     end
 
     def self.included(example_group)

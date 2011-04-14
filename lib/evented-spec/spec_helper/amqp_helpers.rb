@@ -9,7 +9,7 @@ module EventedSpec
         # @yield hook block
         def amqp_before(scope = :each, &block)
           raise ArgumentError, "amqp_before only supports :each scope" unless :each == scope
-          em_hooks[:amqp_before] << block
+          evented_spec_hooks_for(:amqp_before) << block
         end
 
         # Adds after hook that will run inside AMQP connection (AMQP.start loop)
@@ -19,7 +19,7 @@ module EventedSpec
         # @yield hook block
         def amqp_after(scope = :each, &block)
           raise ArgumentError, "amqp_after only supports :each scope" unless :each == scope
-          em_hooks[:amqp_after].unshift block
+          evented_spec_hooks_for(:amqp_after).unshift block
         end
       end # module GroupMethods
 

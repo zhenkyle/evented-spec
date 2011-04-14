@@ -8,7 +8,7 @@ module EventedSpec
         # @yield hook block
         def em_before(scope = :each, &block)
           raise ArgumentError, "em_before only supports :each scope" unless :each == scope
-          em_hooks[:em_before] << block
+          evented_spec_hooks_for(:em_before) << block
         end
 
         # Adds after hook that will run inside EM event loop after example finishes.
@@ -17,7 +17,7 @@ module EventedSpec
         # @yield hook block
         def em_after(scope = :each, &block)
           raise ArgumentError, "em_after only supports :each scope" unless :each == scope
-          em_hooks[:em_after].unshift block
+          evented_spec_hooks_for(:em_after).unshift block
         end
       end # module GroupMethods
 
