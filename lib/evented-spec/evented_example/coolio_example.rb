@@ -24,7 +24,6 @@ module EventedSpec
         end
         timeout(@opts[:spec_timeout]) if @opts[:spec_timeout]
         Coolio::DSL.run
-        run_hooks :coolio_after
       end
 
       # see {EventedExample#timeout}
@@ -46,6 +45,7 @@ module EventedSpec
 
       # Stops the loop and finalizes the example
       def finish_loop
+        run_hooks :coolio_after
         default_loop.stop
         finish_example
       end

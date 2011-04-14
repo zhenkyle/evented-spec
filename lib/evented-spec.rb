@@ -13,3 +13,4 @@ require 'evented-spec/spec_helper/coolio_helpers'
 
 require 'evented-spec/em_spec'
 require 'evented-spec/amqp_spec'
+require 'evented-spec/coolio_spec'

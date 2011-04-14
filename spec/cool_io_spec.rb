@@ -6,9 +6,19 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
   default_timeout 0.1
   let(:event_loop) { Coolio::Loop.default }
 
+  def coolio_running?
+    event_loop.instance_variable_get(:@running)
+  end # coolio_running?
+
   after(:each) {
-    event_loop.instance_variable_get(:@running).should be_false
+    coolio_running?.should be_false
   }
+
+  describe "sanity check:" do
+    it "we should not be in cool.io loop unless explicitly asked" do
+      coolio_running?.should be_false
+    end
+  end
 
   describe "#coolio" do
     it "should execute given block in the right scope" do
@@ -74,7 +84,7 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
     context "coolio_before" do
       coolio_before do
         @called_back = true
-        # Cool.io provides no means of knowing whether reactor is running ;(
+        coolio_running?.should be_true
         Coolio::Loop.default.has_active_watchers?.should be_true
       end
 
@@ -86,10 +96,10 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
       end
     end
 
-    context "coolio_before" do
+    context "coolio_after" do
       coolio_after do
         @called_back = true
-        # Cool.io provides no means of knowing whether reactor is running ;(
+        coolio_running?.should be_true
         Coolio::Loop.default.has_active_watchers?.should be_true
       end
 
@@ -100,6 +110,15 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
         end
         @called_back.should be_true
       end
+    end
+  end
+
+  describe EventedSpec::CoolioSpec do
+    include EventedSpec::CoolioSpec
+    it "should run inside of coolio loop" do
+      coolio_running?.should be_true
+      Coolio::Loop.default.has_active_watchers?.should be_true
+      done
     end
   end
 end
