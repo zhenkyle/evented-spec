@@ -15,6 +15,7 @@ module EventedSpec
         reset
         delayed(0) do
           begin
+            run_hooks :coolio_before
             @example_group_instance.instance_eval(&@block)
           rescue Exception => e
             @spec_exception ||= e
@@ -23,6 +24,7 @@ module EventedSpec
         end
         timeout(@opts[:spec_timeout]) if @opts[:spec_timeout]
         Coolio::DSL.run
+        run_hooks :coolio_after
       end
 
       # see {EventedExample#timeout}

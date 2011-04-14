@@ -69,4 +69,37 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
       }.to_not raise_error
     end
   end
+
+  describe "hooks" do
+    context "coolio_before" do
+      coolio_before do
+        @called_back = true
+        # Cool.io provides no means of knowing whether reactor is running ;(
+        Coolio::Loop.default.has_active_watchers?.should be_true
+      end
+
+      it "should run before example starts" do
+        coolio do
+          @called_back.should be_true
+          done
+        end
+      end
+    end
+
+    context "coolio_before" do
+      coolio_after do
+        @called_back = true
+        # Cool.io provides no means of knowing whether reactor is running ;(
+        Coolio::Loop.default.has_active_watchers?.should be_true
+      end
+
+      it "should run after example finishes" do
+        coolio do
+          @called_back.should be_false
+          done
+        end
+        @called_back.should be_true
+      end
+    end
+  end
 end
