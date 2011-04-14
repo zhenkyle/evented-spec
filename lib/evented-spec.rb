@@ -7,7 +7,7 @@ require 'evented-spec/version'
 require 'evented-spec/evented_example'
 require 'evented-spec/spec_helper'
 
-# As of now, amqp depends on em and, em doesn't depend on anyone,
+# As of now, amqp depends on em, em doesn't depend on anyone and
 # neither does coolio.
 # Pick the files accordingly.
 require 'evented-spec/evented_example/em_example'
