@@ -11,6 +11,7 @@ def custom_gem(name, options = Hash.new)
 end
 
 group :development do
+  gem "rake"
   gem "yard"
   gem "RedCloth", "~> 4.2.7"
 end
