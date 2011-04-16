@@ -6,7 +6,8 @@ Bundler.require :default, :test
 
 require 'yaml'
 require 'evented-spec'
-require 'shared_examples'
+require 'evented-spec/adapters/adapter_seg'
+
 
 require 'amqp'
 begin
