@@ -1,4 +1,4 @@
-$LOAD_PATH << "." unless $LOAD_PATH.include? "." # moronic 1.9.2 breaks things bad
+#$LOAD_PATH << "." unless $LOAD_PATH.include? "." # moronic 1.9.2 breaks things bad
 
 require 'bundler'
 Bundler.setup
@@ -11,15 +11,10 @@ require 'shared_examples'
 require 'amqp'
 require 'cool.io'
 
-def rspec2?
-  defined?(RSpec)
-end
-
 # Done is defined as noop to help share examples between evented and non-evented specs
 def done
 end
 
-RSPEC       = rspec2? ? RSpec : Spec
 
 amqp_config = File.dirname(__FILE__) + '/amqp.yml'
 

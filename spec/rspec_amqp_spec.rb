@@ -17,7 +17,7 @@ def publish_and_consume_once(queue_name="test_sink", data="data")
   end
 end
 
-describe RSPEC do
+describe RSpec do
   it 'should work as normal without AMQP-Spec' do
     1.should == 1
   end
@@ -71,7 +71,7 @@ describe 'Evented AMQP specs' do
         amqp do
           :this.should == :fail
         end
-      }.to raise_error RSPEC::Expectations::ExpectationNotMetError
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
       AMQP.connection.should == nil
     end
 
@@ -81,7 +81,7 @@ describe 'Evented AMQP specs' do
           done
           :this.should == :fail
         end
-      }.to raise_error RSPEC::Expectations::ExpectationNotMetError
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
       AMQP.connection.should == nil
     end
 
@@ -109,7 +109,7 @@ describe 'Evented AMQP specs' do
   end
 end
 
-describe RSPEC, " when running an example group after another group that uses AMQP-Spec " do
+describe RSpec, " when running an example group after another group that uses AMQP-Spec " do
   it "should work normally" do
     :does_not_hang.should_not be_false
   end

@@ -46,7 +46,7 @@ describe 'Plain EM, no AMQP' do
   end
 end
 
-describe RSPEC, " when running an example group after groups that uses EM specs " do
+describe RSpec, " when running an example group after groups that uses EM specs " do
   it "should work normally" do
     :does_not_hang.should_not be_false
   end

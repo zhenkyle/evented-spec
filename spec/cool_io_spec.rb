@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 describe EventedSpec::SpecHelper, "Cool.io bindings" do
   include EventedSpec::SpecHelper
   default_timeout 0.1
@@ -56,7 +55,7 @@ describe EventedSpec::SpecHelper, "Cool.io bindings" do
         coolio do
           :fail.should == :win
         end
-      }.to raise_error(RSPEC::Expectations::ExpectationNotMetError)
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
   end
 

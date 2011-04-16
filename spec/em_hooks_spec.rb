@@ -43,7 +43,7 @@ shared_examples_for 'hooked em specs' do
     # Expectation is set in after{} hook
     em do
       expect { :this.should == :fail
-      }.to raise_error RSPEC::Expectations::ExpectationNotMetError
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
       done
     end
   end
@@ -74,7 +74,7 @@ shared_examples_for 'hooked amqp specs' do
     # Expectation is set in after{} hook
     amqp do
       expect { :this.should == :fail
-      }.to raise_error RSPEC::Expectations::ExpectationNotMetError
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
       done
     end
   end
@@ -108,7 +108,7 @@ describe EventedSpec::SpecHelper, ".em_before/.em_after" do
 
       it 'should execute em_after if RSpec expectation fails' do
         expect { :this.should == :fail
-        }.to raise_error RSPEC::Expectations::ExpectationNotMetError
+        }.to raise_error RSpec::Expectations::ExpectationNotMetError
       end
     end # context 'for non-evented specs'
 
