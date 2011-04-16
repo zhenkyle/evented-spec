@@ -28,7 +28,8 @@ group :test do
     gem 'rspec', '~> 2.5.0'
   end
 
-  gem "cool.io"
+  gem "eventmachine"
+  gem "cool.io",             :platforms => :ruby
   custom_gem "amq-client",   :git => "git://github.com/ruby-amqp/amq-client.git"
   custom_gem "amq-protocol", :git => "git://github.com/ruby-amqp/amq-protocol.git"
   custom_gem "amqp",         :git => "git://github.com/ruby-amqp/amqp.git", :branch => "master"

@@ -9,12 +9,24 @@ require 'evented-spec'
 require 'shared_examples'
 
 require 'amqp'
-require 'cool.io'
+begin
+  require 'cool.io'
+rescue LoadError => e
+  if RUBY_PLATFORM =~ /java/
+    puts "Cool.io is unavailable for jruby"
+  else
+    # cause unknown, reraise
+    raise e
+  end
+end
 
 # Done is defined as noop to help share examples between evented and non-evented specs
 def done
 end
 
+RSpec.configure do |c|
+  c.filter_run_excluding :nojruby => true if RUBY_PLATFORM =~ /java/
+end
 
 amqp_config = File.dirname(__FILE__) + '/amqp.yml'
 
