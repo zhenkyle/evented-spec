@@ -26,6 +26,7 @@ end
 
 RSpec.configure do |c|
   c.filter_run_excluding :nojruby => true if RUBY_PLATFORM =~ /java/
+  c.filter_run_excluding :deliberately_failing => true if ENV["EXCLUDE_DELIBERATELY_FAILING_SPECS"]
 end
 
 amqp_config = File.dirname(__FILE__) + '/amqp.yml'

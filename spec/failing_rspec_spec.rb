@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Following 9 examples should all be failing:' do
+describe 'Following 9 examples should all be failing:', :deliberately_failing => true do
   describe EventMachine, " when running failing examples" do
     include EventedSpec::EMSpec
 
