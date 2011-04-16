@@ -57,6 +57,8 @@ module EventedSpec
 
       # Override this method in your descendants
       #
+      # @note block should be evaluated in EventedExample descendant instance context
+      #       (e.g. in EMExample instance)
       # @note delay may be nil, implying you need to execute the block immediately.
       # @abstract
       def delayed(delay = nil, &block)

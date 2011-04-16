@@ -69,10 +69,11 @@ module EventedSpec
 
       # See {EventedExample#delayed}
       def delayed(delay, &block)
+        instance = self
         if delay
-          EM.add_timer delay, &block
+          EM.add_timer delay, Proc.new { instance.instance_eval(&block) }
         else
-          yield
+          instance.instance_eval(&block)
         end
       end # delayed
     end # class EMExample < EventedExample
