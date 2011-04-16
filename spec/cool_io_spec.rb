@@ -112,6 +112,18 @@ describe EventedSpec::SpecHelper, "Cool.io bindings", :nojruby => true do
     end
   end
 
+  describe "#delayed" do
+    it "should run an operation after certain amount of time" do
+      coolio(:spec_timeout => 3) do
+        time = Time.now
+        delayed(0.5) do
+          (Time.now - time).should be_within(0.3).of(0.5)
+          done
+        end
+      end
+    end
+  end
+
   describe EventedSpec::CoolioSpec do
     include EventedSpec::CoolioSpec
     it "should run inside of coolio loop" do

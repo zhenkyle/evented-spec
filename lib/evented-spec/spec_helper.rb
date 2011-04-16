@@ -106,6 +106,15 @@ module EventedSpec
       @default_options ||= self.class.default_options.dup rescue {}
     end
 
+    # Executes an operation after certain delay
+    #
+    # @param [Float] time to wait before operation
+    def delayed(time, &block)
+      @evented_example.delayed(time) do
+        @example_group_instance.instance_eval(&block)
+      end
+    end # delayed
+
     # Breaks the event loop and finishes the spec. This should be called after
     # you are reasonably sure that your expectations succeeded.
     # Done yields to any given block first, then stops EM event loop.
