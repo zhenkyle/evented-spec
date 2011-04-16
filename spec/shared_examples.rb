@@ -49,15 +49,12 @@ shared_examples_for 'SpecHelper examples' do
 
   # TODO: remove dependency on (possibly long) DNS lookup
   it "should gracefully exit if no AMQP connection was made" do
-    # EventMachine::ConnectionError isn't available in JRuby, where
-    # NativeException: java.nio.channels.UnresolvedAddressException is raised instead
-    connection_exception = defined?(EventMachine::ConnectionError) ? EventMachine::ConnectionError : NativeException
     expect {
       amqp(:host => '192.168.0.256') do
-        AMQP.connection.should be_nil
         done
       end
-    }.to raise_error(connection_exception)
+    }.to raise_error
+
     AMQP.connection.should be_nil
   end
 
