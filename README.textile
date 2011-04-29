@@ -4,7 +4,7 @@ Evented-spec is a set of helpers to help you test your asynchronous code.
 
 EventMachine/Cool.io-based code, including asynchronous "AMQP library":https://github.com/ruby-amqp/ruby-amqp is notoriously difficult to test. To the point that many people recommend using either "mocks":https://github.com/danielsdeleo/moqueue or "synchronous libraries":https://github.com/ruby-amqp/bunny instead of EM-based libraries in unit tests. This is not always an option, however -- sometimes your code just has to run inside the event loop, and you want to test a real thing, not just mocks.
 
-"em-spec":https://github.com/tmm1/em-spec gem made it easier to write evented specs, but it has several drawbacks. First, it is not easy to manage both EM.run and AMQP.start loops at the same time. Second, AMQP is not properly stopped and deactivated upon exceptions and timeouts, resulting in state leak between examples and multiple mystereous failures. amqp-spec, and, subsequently, evented-spec add more helpers to keep your specs from being bloated.
+"em-spec":https://github.com/tmm1/em-spec gem made it easier to write evented specs, but it had several drawbacks. First, it is not easy to manage both EM.run and AMQP.start loops at the same time. Second, AMQP is not properly stopped and deactivated upon exceptions and timeouts, resulting in state leak between examples and multiple mystereous failures. amqp-spec, and, subsequently, evented-spec add more helpers to keep your specs from being bloated.
 
 h2. Usage
 
@@ -121,10 +121,6 @@ bc. describe "using amqp hooks" do
   end
 end
 
-h2. AMQP gem compatibility
-
-AMQP spec helpers are for newer version of AMQP gem, 0.8. If you need spec-helpers for AMQP gem 0.7, take a look at "amqp-spec":https://github.com/ruby-amqp/amqp-spec, API is mostly the same.
-
 h2. Words of warning on blocking the reactor
 
 Evented specs are currently run inside of reactor thread. What this effectively means is that you *should not block* during spec execution.
@@ -190,6 +186,10 @@ bc. describe "Example" do
 end
 
 Reason is simple: if we don't restart event loop every spec example, all kinds of state leaks may occur: stale timers, delayed exceptions, weirdest errors and even segfaults. It isn't impossible but it certainly is very invasive.
+
+h2. Compatibility
+
+EventedSpec is tested with RSpec >= 2.5.0, Cool.io ~> 1.0.0, EventMachine >= 0.12.10, and AMQP >= 0.8.0. Running it with RSpec 1.3 and/or AMQP 0.7.0 is not unheard of, although not tested in all its entirety.
 
 h2. See also
 
