@@ -95,3 +95,10 @@
 * Forked into evented-spec.
 * cool.io support
 * Using amqp 0.8.* API instead of 0.7.*
+
+== 0.4.1 / 2011-04-29
+
+* More cool.io goodies:
+  * EventedSpec::CoolioSpec module similar to EMSpec and AMQPSpec
+  * coolio_before / coolio_after hooks
+* #delayed helper
