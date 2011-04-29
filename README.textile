@@ -47,7 +47,7 @@ h3. EventedSpec::SpecHelper
 
 All three accept a hash of options. Look into method documentation to learn more.
 
-h3. EventedSpec::EMSpec, EventedSpec::AMQPSpec
+h3. EventedSpec::EMSpec, EventedSpec::AMQPSpec, EventedSpec::CoolioSpec
 
 @EventedSpec::EMSpec@ wraps every example in em block, so it might save you a couple of lines per example. @EventedSpec::AMQPSpec@ wraps every example in amqp block.
 
@@ -83,16 +83,20 @@ end
 
 h2. Hooks
 
-There are 4 hooks available to evented specs:
+There are 6 hooks available to evented specs:
 
 * @em_before@ -- launches after reactor started, before example runs
 * @em_after@ -- launches right before reactor is stopped, after example runs
 * @amqp_before@ -- launches after amqp connects, before example runs
 * @amqp_after@ -- launches before amqp disconnects, after example runs
+* @coolio_before@ -- launches after Cool.io starts, before example runs
+* @coolio_after@ -- launches before Cool.io stops, after example runs
 
-So, the order of hooks is as follows: @before(:all)@, @before(:each)@,
+So, the order of hooks for an AMQP spec is as follows: @before(:all)@, @before(:each)@,
 @em_before@, @amqp_before@, example, @amqp_after@, @em_after@, @after(:each)@,
 @after(:all)@
+
+
 
 bc. describe "using amqp hooks" do
   include EventedSpec::AMQPSpec
@@ -148,6 +152,44 @@ bc. describe "using amqp" do
     end
   end
 end
+
+You can also use #delayed helper method to maintain order of execution when callbacks are not an option.
+
+bc. describe "using amqp" do
+  include EventedSpec::AMQPSpec
+  it "should do something useful" do
+    channel = AMQP::Channel.new
+    @stage = 0
+    delayed(0.2) {
+      channel.should be_open
+      @stage = 1
+    }
+    delayed(0.3) {
+      @stage.should == 1
+      done
+    }
+    delayed(0.4) {
+      # this block is never going to be executed
+      raise "Help me!"
+    }
+  end
+end
+
+
+h2. I have an existing reactor running in separate thread, amqp specs won't work for me what should I do?
+
+Unfortunately, right now there aren't many remedies to your problem, besides stopping the event loop in before(:all) hook like this:
+
+bc. describe "Example" do
+  before(:all) { EM.stop_event_loop; sleep(0.1) }
+  after(:all) { do_something_to_restart_the_eventmachine }
+  include EventedSpec::SpecHelper
+  it "should do something" do
+    em { done }
+  end
+end
+
+Reason is simple: if we don't restart event loop every spec example, all kinds of state leaks may occur: stale timers, delayed exceptions, weirdest errors and even segfaults. It isn't impossible but it certainly is very invasive.
 
 h2. See also
 
