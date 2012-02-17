@@ -26,8 +26,9 @@ group :test do
     gem 'win32console'
     gem 'rspec', '~>1.3.0', :require => 'spec'
   else
-    gem 'rspec', '~> 2.5.0'
+    gem 'rspec', '~> 2.5.0', :require => nil
   end
+  gem 'minitest', :require => nil
 
   gem "eventmachine"
   gem "cool.io",             :platforms => :ruby

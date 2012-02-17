@@ -15,7 +15,9 @@ module EventedSpec
     module ClassMethods
       def it(*args, &block)
         if block
-          new_block = Proc.new {|example_group_instance| (example_group_instance || self).instance_eval { amqp(&block) } }
+          new_block = lambda do |*args|
+            amqp(&block)
+          end
           super(*args, &new_block)
         else
           # pending example

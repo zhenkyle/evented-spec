@@ -189,7 +189,7 @@ Reason is simple: if we don't restart event loop every spec example, all kinds o
 
 h2. Compatibility
 
-EventedSpec is tested with RSpec >= 2.5.0, Cool.io ~> 1.0.0, EventMachine >= 0.12.10, and AMQP >= 0.8.0. Running it with RSpec 1.3 and/or AMQP 0.7.0 is not unheard of, although not tested in all its entirety.
+EventedSpec is tested with RSpec >= 2.5.0 / Minitest >= 2.11.2, Cool.io ~> 1.0.0, EventMachine >= 0.12.10, and AMQP >= 0.8.0. Running it with RSpec 1.3 and/or AMQP 0.7.0 is not unheard of, although not tested in all its entirety.
 
 h2. See also
 
