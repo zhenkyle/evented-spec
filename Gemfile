@@ -13,7 +13,7 @@ end
 group :development do
   gem "rake"
   gem "yard"
-  gem "RedCloth", "~> 4.2.7"
+  gem "RedCloth", "~> 4.2.9"
 end
 
 group :test do
