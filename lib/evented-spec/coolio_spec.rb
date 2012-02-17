@@ -14,7 +14,9 @@ module EventedSpec
         if block
           # Shared example groups seem to pass example group instance
           # to the actual example block
-          new_block = Proc.new {|example_group_instance| (example_group_instance || self).instance_eval { coolio(&block) } }
+          new_block = lambda do |*args|
+            coolio(&block)
+          end
           super(*args, &new_block)
         else
           # pending example
