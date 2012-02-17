@@ -28,3 +28,4 @@ Gemfile.lock
 
 ## PROJECT::SPECIFIC
 spec/amqp.yml
+vendor
