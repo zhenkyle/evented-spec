@@ -102,3 +102,8 @@
   * EventedSpec::CoolioSpec module similar to EMSpec and AMQPSpec
   * coolio_before / coolio_after hooks
 * #delayed helper
+
+== 0.4.1 ... 0.10.0.pre / 2011-04-29 ... 2012-02-17
+
+* API wasn't changed at all
+* Minitest support (as in 'minitest/spec')
