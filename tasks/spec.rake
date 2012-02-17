@@ -8,8 +8,9 @@ namespace :spec do
   RSpec::Core::RakeTask.new(:all){|task|}
 
   desc "Run all non-failing specs (for CI)"
-  RSpec::Core::RakeTask.new(:ci) do |task|
+  task(:ci) do |task|
     ENV["EXCLUDE_DELIBERATELY_FAILING_SPECS"] = "1"
+    exec "ruby spec/run.rb && ruby spec/run.rb --minitest"
   end
 
   desc "Run specs with RCov"
