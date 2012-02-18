@@ -25,7 +25,4 @@ log
 .rvmrc
 .bundle
 Gemfile.lock
-
-## PROJECT::SPECIFIC
-spec/amqp.yml
-vendor
+*.gem
