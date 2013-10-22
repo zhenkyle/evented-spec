@@ -80,6 +80,19 @@ bc. describe "using default_timeout" do
   end
 end
 
+h3. Specific timeout
+
+A specific timeout can be set as well
+
+describe "overriding default_timeout" do
+  include EventedSpec::SpecHelper
+  default_timeout 0.5
+  it "should give it some more time" do
+    em(5) do
+      1.should == 1 # this spec is going to fail with timeout error after 5 seconds
+    end
+  end
+end
 
 h2. Hooks
 
