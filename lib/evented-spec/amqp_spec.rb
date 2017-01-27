@@ -15,10 +15,10 @@ module EventedSpec
     module ClassMethods
       def it(*args, &block)
         if block
-          new_block = lambda do |*args|
+          new_block = lambda do |*args_block|
             amqp(&block)
           end
-          super(*args, &new_block)
+          super(*args_block, &new_block)
         else
           # pending example
           super

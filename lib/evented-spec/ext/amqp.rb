@@ -22,7 +22,7 @@ module AMQP
   def self.start_connection(opts={}, &block)
     if amqp_pre_08?
       self.connection = connect opts
-      self.connection.callback &block
+      self.connection.callback(&block)
     else
       self.connection = connect opts, &block
     end

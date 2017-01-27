@@ -42,6 +42,7 @@ module EventedSpec
       #
       # @return [Hash] hash with example group metadata
       def evented_spec_metadata
+        @evented_spec_metadata ||= nil
         if @evented_spec_metadata
           @evented_spec_metadata
         else
@@ -126,7 +127,7 @@ module EventedSpec
     #
     # @param [Float] Delay before event loop is stopped
     def done(*args, &block)
-      @evented_example.done *args, &block if @evented_example
+      @evented_example.done(*args, &block) if @evented_example
     end
 
     # Manually sets timeout for currently running example. If spec doesn't call
@@ -134,7 +135,7 @@ module EventedSpec
     #
     # @param [Float] Delay before event loop is stopped with error
     def timeout(*args)
-      @evented_example.timeout *args if @evented_example
+      @evented_example.timeout(*args) if @evented_example
     end
 
   end # module SpecHelper
