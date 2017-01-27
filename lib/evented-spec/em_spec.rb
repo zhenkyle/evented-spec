@@ -14,10 +14,10 @@ module EventedSpec
         if block
           # Shared example groups seem to pass example group instance
           # to the actual example block
-          new_block = lambda do |*args|
+          new_block = lambda do |*args_block|
             em(&block)
           end
-          super(*args, &new_block)
+          super(*args_block, &new_block)
         else
           # pending example
           super

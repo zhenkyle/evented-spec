@@ -40,6 +40,7 @@ module EventedSpec
 
       # See {EventedExample#timeout}
       def timeout(spec_timeout)
+        @spec_timer ||= nil
         EM.cancel_timer(@spec_timer) if @spec_timer
         @spec_timer = EM.add_timer(spec_timeout) do
           @spec_exception = SpecTimeoutExceededError.new "Example timed out"
