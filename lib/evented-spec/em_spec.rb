@@ -17,7 +17,7 @@ module EventedSpec
           new_block = lambda do |*args_block|
             em(&block)
           end
-          super(*args_block, &new_block)
+          super(*args, &new_block)
         else
           # pending example
           super
